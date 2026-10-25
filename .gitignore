@@ -1,0 +1,14 @@
+node_modules/
+.next/
+*.tsbuildinfo
+out/
+.env*
+!.env.example
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+dev.log
+dev-error.log
+.opencode/
+opencode.jsonc
