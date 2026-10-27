@@ -30,7 +30,6 @@ const ACCESS_DENIED_PAGE = `<!doctype html>
       }
       h1 { margin: 0; font-size: clamp(40px, 7vw, 60px); letter-spacing: -.06em; }
       .message { margin: 20px 0 0; color: #d3d5dc; font-size: 20px; letter-spacing: 0; }
-      .hint { margin: 18px 0 0; color: #777d8a; font-size: 12px; letter-spacing: 0; }
     </style>
   </head>
   <body>
@@ -38,10 +37,8 @@ const ACCESS_DENIED_PAGE = `<!doctype html>
       <p>505 NOT FOUND</p>
       <h1>Access Denied</h1>
       <p class="message">Please change your network</p>
-      <p class="hint" id="access-hint">Press Ctrl+Shift+K to open the main site</p>
     </main>
     <script>
-      const hint = document.getElementById("access-hint");
       let unlocking = false;
 
       document.addEventListener("keydown", (event) => {
@@ -53,16 +50,12 @@ const ACCESS_DENIED_PAGE = `<!doctype html>
         ) {
           event.preventDefault();
           unlocking = true;
-          hint.textContent = "Opening the main site...";
           fetch("/api/access", { method: "POST" })
             .then((response) => {
               if (!response.ok) throw new Error("Unlock request failed");
               location.reload();
             })
-            .catch(() => {
-              unlocking = false;
-              hint.textContent = "Could not open the site. Press Ctrl+Shift+K to try again.";
-            });
+            .catch(() => { unlocking = false; });
         }
       });
     </script>
