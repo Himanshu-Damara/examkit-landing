@@ -227,7 +227,7 @@ function BrowserPreview() {
               </div>
               <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.24em] text-violet">Extension surface</p>
               <h3 className="max-w-[390px] text-2xl font-medium tracking-[-0.05em] text-white/90 sm:text-4xl">
-                A sharper way to move through the web.
+                Access
               </h3>
               <p className="mt-4 max-w-[340px] text-xs leading-6 text-white/40">
                 A visual preview of the ExamKit experience. Product behavior lives in the extension itself.
@@ -370,10 +370,10 @@ export default function LandingPage() {
               </a>
             ) : null}
             <InstallLink className="focus-ring button-primary rounded-full px-4 py-2.5 text-xs font-semibold text-black">
-              <span className="flex items-center gap-2">Install Extension <ArrowUpRight size={14} /></span>
+              <span className="flex items-center gap-2">Access <ArrowUpRight size={14} /></span>
             </InstallLink>
             <DownloadLink className="focus-ring button-secondary rounded-full px-4 py-2.5 text-xs font-medium text-white/75">
-              <span className="flex items-center gap-2">Download package <Download size={14} /></span>
+              <span className="flex items-center gap-2">Access <Download size={14} /></span>
             </DownloadLink>
           </div>
 
@@ -395,10 +395,10 @@ export default function LandingPage() {
               </a>
             ))}
             <InstallLink className="button-primary mt-2 flex items-center justify-center rounded-xl px-4 py-3 text-sm font-semibold text-black" onClick={() => setMobileOpen(false)}>
-              Get ExamKit <ArrowUpRight size={16} className="ml-2" />
+              Access <ArrowUpRight size={16} className="ml-2" />
             </InstallLink>
             <DownloadLink className="button-secondary mt-2 flex items-center justify-center rounded-xl px-4 py-3 text-sm font-medium text-white/75" onClick={() => setMobileOpen(false)}>
-              Download package <Download size={16} className="ml-2" />
+              Access <Download size={16} className="ml-2" />
             </DownloadLink>
           </motion.div>
         ) : null}
@@ -410,31 +410,29 @@ export default function LandingPage() {
         <div className="hero-orb hero-orb-two absolute right-[-10%] top-48 -z-10 h-[32rem] w-[32rem] rounded-full bg-cyan/10 blur-[130px]" />
         <div className="mx-auto grid w-full max-w-7xl items-center gap-16 lg:grid-cols-[0.92fr_1.08fr] lg:gap-8">
           <div className="relative z-10 max-w-2xl">
-            <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="mb-8 inline-flex items-center gap-2 rounded-full border border-violet/25 bg-violet/[0.08] px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.22em] text-violet/90">
+            <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="mb-8 inline-flex items-center gap-2 rounded-full border border-violet/20 bg-violet/10 px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.26em] text-violet/80">
               <span className="h-1.5 w-1.5 rounded-full bg-violet shadow-[0_0_12px_#9b7bff]" />
-              An OMEN browser extension
+              Access
             </motion.div>
-            <motion.h1 initial={{ opacity: 0, y: 25 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.08, ease: [0.22, 1, 0.36, 1] }} className="max-w-3xl text-[clamp(3.8rem,9vw,7.4rem)] font-medium leading-[0.87] tracking-[-0.085em]">
-              Your browser.
-              <br />
-              <span className="text-gradient">Your rules.</span>
+            <motion.h1 initial={{ opacity: 0, y: 25 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.08, ease: [0.22, 1, 0.36, 1] }} className="max-w-3xl text-[clamp(3.8rem,6vw,6.4rem)] font-medium leading-[0.88] tracking-[-0.06em] text-white">
+              Access
             </motion.h1>
             <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.22 }} className="mt-8 max-w-xl text-base leading-7 text-white/50 sm:text-lg">
-              <span className="font-medium text-white/80">Meet ExamKit.</span> A powerful browser extension designed to elevate your browsing experience — with a focused, considered surface from OMEN.
+              <span className="font-medium text-white/80">Access</span> is the page view shown here.
             </motion.p>
             <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.34 }} className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
               <InstallLink className="button-primary focus-ring inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold text-black">
-                Get ExamKit <ArrowUpRight size={17} />
+                Access <ArrowUpRight size={17} />
               </InstallLink>
               <a href="#features" className="focus-ring button-secondary inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-medium text-white/70 hover:text-white">
-                Explore features <ArrowDown size={15} />
+                Access <ArrowDown size={15} />
               </a>
               <DownloadLink className="focus-ring button-secondary inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-medium text-white/70 hover:text-white">
-                Download package <Download size={15} />
+                Access <Download size={15} />
               </DownloadLink>
             </motion.div>
             <p className="mt-4 text-[11px] text-white/25">
-              {listingConfigured ? "Install opens the official Microsoft Edge Add-ons listing." : "Install link is waiting for NEXT_PUBLIC_EXAMKIT_LISTING_URL."} {downloadConfigured ? "Download opens the configured release link." : "Download is waiting for NEXT_PUBLIC_EXAMKIT_DOWNLOAD_URL."}
+              {listingConfigured ? "Access opens the official Microsoft Edge Add-ons listing." : "Access link is waiting for NEXT_PUBLIC_EXAMKIT_LISTING_URL."} {downloadConfigured ? "Access is available for download." : "Access download is still disabled."}
             </p>
           </div>
           <div className="relative z-10 lg:pl-3">
@@ -443,7 +441,7 @@ export default function LandingPage() {
         </div>
         <div className="absolute bottom-8 left-1/2 hidden -translate-x-1/2 items-center gap-3 text-[10px] uppercase tracking-[0.25em] text-white/25 lg:flex">
           <span className="h-px w-12 bg-white/15" />
-          Scroll to explore
+          Access
           <span className="h-px w-12 bg-white/15" />
         </div>
       </section>
@@ -452,11 +450,11 @@ export default function LandingPage() {
         <div className="mx-auto max-w-7xl">
           <div className="mb-14 grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
             <div>
-              <p className="section-kicker">The point of view</p>
-              <h2 className="mt-4 max-w-lg text-4xl font-medium tracking-[-0.06em] text-white sm:text-6xl">Less noise. More intent.</h2>
+              <p className="section-kicker">Access</p>
+              <h2 className="mt-4 max-w-lg text-4xl font-medium tracking-[-0.06em] text-white sm:text-6xl">Access</h2>
             </div>
             <p className="max-w-xl text-base leading-7 text-white/45 lg:justify-self-end">
-              ExamKit is presented as a compact browser layer — intentionally simple, visually distinct, and ready to meet you where your work already happens.
+              Access is the only visible state for this page.
             </p>
           </div>
           <div className="grid gap-3 md:grid-cols-2">
@@ -464,7 +462,7 @@ export default function LandingPage() {
               const Icon = feature.icon;
               return (
                 <TiltCard key={feature.number}>
-                  <motion.article initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-80px" }} transition={{ duration: 0.6, delay: index * 0.06 }} className="feature-card group relative min-h-[270px] overflow-hidden rounded-3xl border border-white/[0.09] bg-white/[0.035] p-7 sm:p-9">
+                  <motion.article initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-80px" }} transition={{ duration: 0.6, delay: index * 0.06 }} className="feature-card group relative overflow-hidden rounded-[28px] border border-white/[0.09] bg-white/[0.03] p-6 sm:p-7">
                     <div className={`feature-glow ${feature.accent === "cyan" ? "feature-glow-cyan" : "feature-glow-violet"}`} />
                     <div className="relative flex items-start justify-between">
                       <div className={`icon-box ${feature.accent === "cyan" ? "icon-box-cyan" : "icon-box-violet"}`}>
@@ -476,7 +474,7 @@ export default function LandingPage() {
                       <h3 className="text-xl font-medium tracking-[-0.04em] text-white/90">{feature.title}</h3>
                       <p className="mt-3 text-sm leading-6 text-white/40">{feature.description}</p>
                     </div>
-                    <ArrowUpRight size={18} className="absolute bottom-8 right-8 text-white/20 transition duration-300 group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-white/70" />
+                    <ArrowUpRight size={18} className="absolute bottom-8 right-8 text-white/20 transition duration-300 group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-white/60" />
                   </motion.article>
                 </TiltCard>
               );
@@ -488,22 +486,22 @@ export default function LandingPage() {
       <section id="installation" className="relative border-y border-white/[0.07] bg-[#0b0b10] px-5 py-28 sm:px-8 lg:px-12 lg:py-40">
         <div className="mx-auto grid max-w-7xl gap-16 lg:grid-cols-[0.75fr_1.25fr]">
           <div className="lg:sticky lg:top-32 lg:self-start">
-            <p className="section-kicker">A clean start</p>
-            <h2 className="mt-4 max-w-xl text-4xl font-medium tracking-[-0.06em] text-white sm:text-6xl">Five steps to a sharper browser.</h2>
-            <p className="mt-6 max-w-md text-base leading-7 text-white/45">When the official listing is live, the path from Edge to ExamKit is intentionally short.</p>
+            <p className="section-kicker">Access</p>
+            <h2 className="mt-4 max-w-xl text-4xl font-medium tracking-[-0.06em] text-white sm:text-6xl">Access</h2>
+            <p className="mt-6 max-w-md text-base leading-7 text-white/45">This is the access state for the page.</p>
             <InstallLink className="button-secondary focus-ring mt-8 inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-medium text-white/75 hover:text-white">
-              Open listing <ExternalLink size={15} />
+              Access <ExternalLink size={15} />
             </InstallLink>
             <DownloadLink className="button-secondary focus-ring mt-3 inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-medium text-white/75 hover:text-white">
-              Download package <Download size={15} />
+              Access <Download size={15} />
             </DownloadLink>
           </div>
           <div className="relative">
             <div className="install-line absolute left-[19px] top-4 bottom-4 w-px bg-gradient-to-b from-violet/60 via-white/10 to-cyan/50" />
             <div className="space-y-4">
               {installSteps.map((item, index) => (
-                <motion.div key={item.step} initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, margin: "-60px" }} transition={{ duration: 0.55, delay: index * 0.08 }} className="relative flex gap-6 rounded-2xl border border-white/[0.07] bg-white/[0.025] p-5 sm:p-6">
-                  <div className={`relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border text-xs font-semibold ${index === 0 ? "border-violet/40 bg-violet/15 text-violet" : "border-white/10 bg-[#101015] text-white/45"}`}>
+                <motion.div key={item.step} initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, margin: "-60px" }} transition={{ duration: 0.55, delay: index * 0.07 }} className="relative flex gap-4 rounded-2xl border border-white/[0.06] bg-white/[0.02] p-4 sm:p-5">
+                  <div className={`relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border text-xs font-semibold ${index === 0 ? "border-violet/40 bg-violet/15 text-violet" : "border-white/10 bg-white/[0.03] text-white/65"}`}>
                     {index === 0 ? <Check size={16} /> : item.step}
                   </div>
                   <div className="pt-1">
@@ -520,9 +518,9 @@ export default function LandingPage() {
       <section id="faq" className="relative px-5 py-28 sm:px-8 lg:px-12 lg:py-40">
         <div className="mx-auto grid max-w-7xl gap-14 lg:grid-cols-[0.75fr_1.25fr]">
           <div>
-            <p className="section-kicker">No mystery</p>
-            <h2 className="mt-4 max-w-lg text-4xl font-medium tracking-[-0.06em] text-white sm:text-6xl">Questions, answered.</h2>
-            <p className="mt-6 max-w-md text-base leading-7 text-white/45">The essentials, without the marketing fog. Product-specific claims stay limited to what is currently verified.</p>
+            <p className="section-kicker">Access</p>
+            <h2 className="mt-4 max-w-lg text-4xl font-medium tracking-[-0.06em] text-white sm:text-6xl">Access</h2>
+            <p className="mt-6 max-w-md text-base leading-7 text-white/45">The page is intentionally limited to the Access view.</p>
           </div>
           <div className="divide-y divide-white/[0.08] border-y border-white/[0.08]">
             {faqs.map((faq, index) => {
@@ -531,7 +529,7 @@ export default function LandingPage() {
                 <div key={faq.question}>
                   <button type="button" className="focus-ring flex w-full items-center justify-between gap-6 py-6 text-left" aria-expanded={isOpen} onClick={() => setOpenFaq(isOpen ? -1 : index)}>
                     <span className="text-base font-medium text-white/75 sm:text-lg">{faq.question}</span>
-                    <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border transition ${isOpen ? "rotate-180 border-violet/40 bg-violet/10 text-violet" : "border-white/10 text-white/35"}`}>
+                    <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border transition ${isOpen ? "rotate-180 border-violet/40 bg-violet/10 text-violet" : "border-white/[0.08] bg-white/[0.02] text-white/35"}`}>
                       <ChevronDown size={16} />
                     </span>
                   </button>
@@ -546,17 +544,17 @@ export default function LandingPage() {
       </section>
 
       <section className="relative px-5 pb-28 sm:px-8 lg:px-12 lg:pb-40">
-        <div className="cta-panel relative mx-auto max-w-7xl overflow-hidden rounded-[2rem] border border-violet/20 bg-gradient-to-br from-violet/[0.18] via-[#15121f] to-cyan/[0.08] px-6 py-16 text-center sm:px-12 sm:py-24">
+        <div className="cta-panel relative mx-auto max-w-7xl overflow-hidden rounded-[2rem] border border-violet/20 bg-gradient-to-br from-violet/[0.18] via-[#15121f] to-cyan/[0.08] px-6 py-16 text-center sm:px-8 lg:px-12">
           <div className="absolute left-1/2 top-0 h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet/25 blur-[90px]" />
           <div className="relative">
-            <p className="section-kicker">Your move</p>
-            <h2 className="mx-auto mt-4 max-w-3xl text-4xl font-medium tracking-[-0.07em] text-white sm:text-6xl">Make the browser yours.</h2>
-            <p className="mx-auto mt-5 max-w-lg text-sm leading-7 text-white/45">ExamKit is ready when its official Edge Add-ons listing is connected.</p>
+            <p className="section-kicker">Access</p>
+            <h2 className="mx-auto mt-4 max-w-3xl text-4xl font-medium tracking-[-0.07em] text-white sm:text-6xl">Access</h2>
+            <p className="mx-auto mt-5 max-w-lg text-sm leading-7 text-white/45">Access is the only message visible on this page.</p>
             <InstallLink className="button-primary focus-ring mt-8 inline-flex items-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold text-black">
-              Get ExamKit <Download size={16} />
+              Access <Download size={16} />
             </InstallLink>
             <DownloadLink className="button-secondary focus-ring mt-3 inline-flex items-center gap-2 rounded-full px-6 py-3.5 text-sm font-medium text-white/80">
-              Download package <Download size={16} />
+              Access <Download size={16} />
             </DownloadLink>
           </div>
         </div>
@@ -567,15 +565,15 @@ export default function LandingPage() {
           <div>
             <a href="#home" className="focus-ring flex items-center gap-3">
               <LogoMark />
-              <span className="text-sm font-semibold tracking-[-0.02em] text-white/80">OMEN / ExamKit</span>
+              <span className="text-sm font-semibold tracking-[-0.02em] text-white/80">Access</span>
             </a>
-            <p className="mt-4 max-w-sm text-xs leading-5 text-white/30">A focused browser extension experience. Distributed through Microsoft Edge Add-ons.</p>
+            <p className="mt-4 max-w-sm text-xs leading-5 text-white/30">Access page only.</p>
           </div>
           <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-xs text-white/35">
-            {siteConfig.links.privacy ? <a href={siteConfig.links.privacy} className="focus-ring hover:text-white/80">Privacy</a> : <span title="Add a verified privacy policy URL before publishing" className="cursor-not-allowed text-white/20">Privacy</span>}
-            {siteConfig.links.contact ? <a href={siteConfig.links.contact} className="focus-ring hover:text-white/80">Contact</a> : <span title="Add a verified contact destination before publishing" className="cursor-not-allowed text-white/20">Contact</span>}
+            {siteConfig.links.privacy ? <a href={siteConfig.links.privacy} className="focus-ring hover:text-white/80">Privacy</a> : <span title="Add a verified privacy policy URL before publishing.">Privacy</span>}
+            {siteConfig.links.contact ? <a href={siteConfig.links.contact} className="focus-ring hover:text-white/80">Contact</a> : <span title="Add a verified contact destination before publishing.">Contact</span>}
             {siteConfig.links.github ? <a href={siteConfig.links.github} className="focus-ring inline-flex items-center gap-1.5 hover:text-white/80"><Github size={13} /> GitHub</a> : null}
-            <span className="text-white/20">© {new Date().getFullYear()} OMEN</span>
+            <span className="text-white/20">© {new Date().getFullYear()} Access</span>
           </div>
         </div>
       </footer>
