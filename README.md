@@ -43,9 +43,9 @@ Until `NEXT_PUBLIC_EXAMKIT_LISTING_URL` is set, every install CTA remains visibl
 
 ## Restricting production access
 
-Set `ACCESS_ALLOWED_IPS` to a comma-separated list of allowed public IP addresses and/or `ACCESS_CODE` to a long, random access code in the production environment (for example, in Vercel's project environment variables). The normal site is available to an allowlisted IP or after entering the code. Other requests receive a 404 response with the “505 NOT FOUND / Access Denied” page. If neither is configured, production access is denied. Local development is not restricted.
+Set `ACCESS_ALLOWED_IPS` to a comma-separated list of allowed public IP addresses in the production environment (for example, in Vercel's project environment variables). The normal site is available to an allowlisted IP or after triggering the keyboard shortcut. Other requests receive a 404 response with the “505 NOT FOUND / Access Denied” page. If the IP list is empty, the normal site is restricted until a visitor uses the shortcut. Local development is not restricted.
 
-On the denial page, press **Ctrl+Shift+K** to open the access-code prompt. Successful verification grants access for 12 hours using a signed, HTTP-only cookie. Set the code only in deployment environment variables; use a long random value and never commit it. The allowlist uses the client address from the trusted deployment proxy's `X-Forwarded-For` header. Keep the app behind Vercel or another proxy that sets this header; do not expose the app directly to untrusted clients. If your public IP changes, update the allowlist and redeploy.
+On the denial page, press **Ctrl+Shift+K** to open the main site directly. This is only an obscured display gate, not security: anyone can press the shortcut or call its public unlock endpoint. For real access control, use `ACCESS_ALLOWED_IPS` and do not enable this bypass. Shortcut access lasts 12 hours in an HTTP-only cookie. The allowlist uses the client address from the trusted deployment proxy's `X-Forwarded-For` header. Keep the app behind Vercel or another proxy that sets this header; do not expose the app directly to untrusted clients. If your public IP changes, update the allowlist and redeploy.
 
 ## Checks
 
@@ -59,7 +59,7 @@ npm run build
 
 1. Push this project to a Git provider.
 2. Import the repository into Vercel.
-3. Add `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_EXAMKIT_LISTING_URL`, and (when ready) `NEXT_PUBLIC_EXAMKIT_DOWNLOAD_URL` in the Vercel project environment variables for Production. Configure `ACCESS_CODE` and/or `ACCESS_ALLOWED_IPS` to control access.
+3. Add `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_EXAMKIT_LISTING_URL`, and (when ready) `NEXT_PUBLIC_EXAMKIT_DOWNLOAD_URL` in the Vercel project environment variables for Production. Configure `ACCESS_ALLOWED_IPS` if you want to limit access by IP.
 4. Deploy. Vercel detects the Next.js build automatically.
 
 There is no database, backend, extension self-hosting, CRX download flow, `updates.xml`, or extension `update_url` in this project. Microsoft Edge Add-ons remains the distribution channel.

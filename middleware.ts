@@ -31,34 +31,6 @@ const ACCESS_DENIED_PAGE = `<!doctype html>
       h1 { margin: 0; font-size: clamp(40px, 7vw, 60px); letter-spacing: -.06em; }
       .message { margin: 20px 0 0; color: #d3d5dc; font-size: 20px; letter-spacing: 0; }
       .hint { margin: 18px 0 0; color: #777d8a; font-size: 12px; letter-spacing: 0; }
-      #access-dialog {
-        position: fixed;
-        inset: 0;
-        display: grid;
-        place-items: center;
-        padding: 20px;
-        background: rgba(0, 0, 0, .72);
-      }
-      #access-dialog[hidden] { display: none; }
-      form {
-        width: min(100%, 360px);
-        padding: 28px;
-        border: 1px solid rgba(255, 255, 255, .14);
-        border-radius: 16px;
-        background: #10131b;
-        text-align: left;
-      }
-      label { display: block; margin-bottom: 10px; font-size: 14px; }
-      input, button {
-        width: 100%;
-        border: 1px solid rgba(255, 255, 255, .18);
-        border-radius: 8px;
-        padding: 12px;
-        font: inherit;
-      }
-      input { background: #080b11; color: #f7f8fb; }
-      button { margin-top: 12px; background: #f7f8fb; color: #080b11; cursor: pointer; font-weight: 700; }
-      #error { min-height: 20px; margin: 10px 0 0; color: #ff777d; font-size: 13px; letter-spacing: 0; }
     </style>
   </head>
   <body>
@@ -66,53 +38,31 @@ const ACCESS_DENIED_PAGE = `<!doctype html>
       <p>505 NOT FOUND</p>
       <h1>Access Denied</h1>
       <p class="message">Please change your network</p>
-      <p class="hint">Press Ctrl+Shift+K to enter an access code</p>
+      <p class="hint" id="access-hint">Press Ctrl+Shift+K to open the main site</p>
     </main>
-    <div id="access-dialog" hidden>
-      <form id="access-form">
-        <label for="access-code">Enter access code</label>
-        <input id="access-code" name="code" type="password" autocomplete="current-password" required>
-        <button type="submit">Unlock</button>
-        <p id="error" role="status" aria-live="polite"></p>
-      </form>
-    </div>
     <script>
-      const dialog = document.getElementById("access-dialog");
-      const form = document.getElementById("access-form");
-      const codeInput = document.getElementById("access-code");
-      const error = document.getElementById("error");
+      const hint = document.getElementById("access-hint");
+      let unlocking = false;
 
       document.addEventListener("keydown", (event) => {
-        if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === "k") {
+        if (
+          !unlocking &&
+          event.ctrlKey &&
+          event.shiftKey &&
+          event.key.toLowerCase() === "k"
+        ) {
           event.preventDefault();
-          dialog.hidden = false;
-          codeInput.focus();
-        }
-        if (event.key === "Escape") dialog.hidden = true;
-      });
-
-      form.addEventListener("submit", async (event) => {
-        event.preventDefault();
-        error.textContent = "";
-        const button = form.querySelector("button");
-        button.disabled = true;
-        try {
-          const response = await fetch("/api/access", {
-            method: "POST",
-            headers: { "content-type": "application/json" },
-            body: JSON.stringify({ code: codeInput.value })
-          });
-          if (!response.ok) {
-            error.textContent = response.status === 503
-              ? "Access code is not configured."
-              : "Invalid access code.";
-            return;
-          }
-          location.reload();
-        } catch {
-          error.textContent = "Could not verify the access code. Try again.";
-        } finally {
-          button.disabled = false;
+          unlocking = true;
+          hint.textContent = "Opening the main site...";
+          fetch("/api/access", { method: "POST" })
+            .then((response) => {
+              if (!response.ok) throw new Error("Unlock request failed");
+              location.reload();
+            })
+            .catch(() => {
+              unlocking = false;
+              hint.textContent = "Could not open the site. Press Ctrl+Shift+K to try again.";
+            });
         }
       });
     </script>
@@ -120,53 +70,14 @@ const ACCESS_DENIED_PAGE = `<!doctype html>
 </html>`;
 
 const SESSION_COOKIE = "access_session";
+const SESSION_COOKIE_VALUE = "unlocked";
 
 function normalizeIp(ip: string): string {
   const normalized = ip.trim().toLowerCase();
   return normalized.startsWith("::ffff:") ? normalized.slice(7) : normalized;
 }
 
-async function hasValidAccessSession(request: NextRequest): Promise<boolean> {
-  const accessCode = process.env.ACCESS_CODE;
-  const token = request.cookies.get(SESSION_COOKIE)?.value;
-  if (!accessCode || !token) return false;
-
-  const [expiresAtText, signature, ...extra] = token.split(".");
-  const expiresAt = Number(expiresAtText);
-  if (
-    extra.length > 0 ||
-    !/^\d{13}$/.test(expiresAtText) ||
-    !/^[a-f0-9]{64}$/.test(signature) ||
-    !Number.isSafeInteger(expiresAt) ||
-    expiresAt <= Date.now()
-  ) {
-    return false;
-  }
-
-  const key = await crypto.subtle.importKey(
-    "raw",
-    new TextEncoder().encode(accessCode),
-    { name: "HMAC", hash: "SHA-256" },
-    false,
-    ["sign"],
-  );
-  const signed = await crypto.subtle.sign(
-    "HMAC",
-    key,
-    new TextEncoder().encode(expiresAtText),
-  );
-  const expected = Array.from(new Uint8Array(signed), (byte) =>
-    byte.toString(16).padStart(2, "0"),
-  ).join("");
-
-  let difference = 0;
-  for (let index = 0; index < expected.length; index += 1) {
-    difference |= expected.charCodeAt(index) ^ signature.charCodeAt(index);
-  }
-  return difference === 0;
-}
-
-export async function middleware(request: NextRequest) {
+export function middleware(request: NextRequest) {
   if (request.nextUrl.pathname === "/api/access") {
     return NextResponse.next();
   }
@@ -188,7 +99,7 @@ export async function middleware(request: NextRequest) {
 
   if (
     (clientIp && allowedIps.has(clientIp)) ||
-    (await hasValidAccessSession(request))
+    request.cookies.get(SESSION_COOKIE)?.value === SESSION_COOKIE_VALUE
   ) {
     return NextResponse.next();
   }
