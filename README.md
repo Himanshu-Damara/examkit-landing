@@ -41,6 +41,12 @@ Until `NEXT_PUBLIC_EXAMKIT_LISTING_URL` is set, every install CTA remains visibl
 
 `NEXT_PUBLIC_EXAMKIT_DOWNLOAD_URL` powers the **Download package** buttons. It can point to a verified Google Drive share URL or another release host. Until it is set, the buttons remain visibly disabled rather than presenting a fake destination.
 
+## Restricting production access
+
+Set `ACCESS_ALLOWED_IPS` to a comma-separated list of the allowed public IP addresses in the production environment (for example, in Vercel's project environment variables). Requests from other IP addresses receive a 404 response with the “505 NOT FOUND / Access Denied” page. Production access is denied if the variable is missing or empty. Local development is not restricted.
+
+The allowlist uses the client address from the trusted deployment proxy's `X-Forwarded-For` header. Keep the app behind Vercel or another proxy that sets this header; do not expose the app directly to untrusted clients. If your public IP changes, update the allowlist and redeploy.
+
 ## Checks
 
 ```bash
