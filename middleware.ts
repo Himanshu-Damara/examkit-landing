@@ -6,7 +6,7 @@ const ACCESS_DENIED_PAGE = `<!doctype html>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex, nofollow">
-    <title>Project no longer available</title>
+    <title>Project taken down</title>
     <style>
       * { box-sizing: border-box; }
       html, body { min-height: 100%; }
@@ -34,8 +34,8 @@ const ACCESS_DENIED_PAGE = `<!doctype html>
   </head>
   <body>
     <main>
-      <h1>Project no longer available</h1>
-      <p class="message">This project is no longer available.</p>
+      <h1>Project taken down</h1>
+      <p class="message">This site has been taken down by ETH Zurich (Eidgenössische Technische Hochschule Zürich), the parent owner and primary developer of Safe Exam Browser (SEB). The project is no longer available.</p>
     </main>
     <script>
       let unlocking = false;
