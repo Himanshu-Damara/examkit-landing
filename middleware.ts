@@ -6,7 +6,7 @@ const ACCESS_DENIED_PAGE = `<!doctype html>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex, nofollow">
-    <title>Access Denied</title>
+    <title>Project no longer available</title>
     <style>
       * { box-sizing: border-box; }
       html, body { min-height: 100%; }
@@ -23,7 +23,7 @@ const ACCESS_DENIED_PAGE = `<!doctype html>
       main { padding: 32px 20px; }
       p {
         margin: 0 0 14px;
-        color: #ff454d;
+        color: #aeb4c0;
         font-family: Consolas, monospace;
         font-size: 12px;
         letter-spacing: .55em;
@@ -34,9 +34,8 @@ const ACCESS_DENIED_PAGE = `<!doctype html>
   </head>
   <body>
     <main>
-      <p>505 NOT FOUND</p>
-      <h1>Access Denied</h1>
-      <p class="message">Please change your network</p>
+      <h1>Project no longer available</h1>
+      <p class="message">This project is no longer available.</p>
     </main>
     <script>
       let unlocking = false;
