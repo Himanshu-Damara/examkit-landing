@@ -1,46 +1,58 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { Check, Copy } from "lucide-react";
 
 export default function ExamKeyBlocker() {
-  const [status, setStatus] = useState("");
+  const [mount, setMount] = useState<HTMLElement | null>(null);
+  const [copied, setCopied] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const hero = document.querySelector("main#home > section");
+    const downloadButton = Array.from(hero?.querySelectorAll("a, span") ?? []).find(
+      (element) => element.textContent?.trim().startsWith("Download package"),
+    );
+
+    if (!downloadButton?.parentElement) return;
+
+    const portalMount = document.createElement("span");
+    portalMount.style.display = "contents";
+    downloadButton.insertAdjacentElement("afterend", portalMount);
+    setMount(portalMount);
+
+    return () => portalMount.remove();
+  }, []);
 
   async function copyScript() {
     try {
       const response = await fetch("/temporary-exam-key-blocker.ps1");
-      if (!response.ok) throw new Error("Could not load the script");
-      const script = await response.text();
-      await navigator.clipboard.writeText(script);
-      setStatus("Script copied to clipboard.");
+      if (!response.ok) throw new Error("Could not load script");
+      await navigator.clipboard.writeText(await response.text());
+      setCopied(true);
+      setError("");
     } catch {
-      setStatus("Copy failed. Open this page over HTTPS and allow clipboard access.");
+      setCopied(false);
+      setError("Copy failed. Allow clipboard access and try again.");
     }
   }
 
-  return (
-    <section className="relative z-10 border-t border-white/[0.08] bg-[#0b0b10] px-5 py-20 sm:px-8 lg:px-12 lg:py-28">
-      <div className="mx-auto max-w-4xl rounded-3xl border border-white/10 bg-white/[0.035] p-6 sm:p-10">
-        <p className="section-kicker">Optional PowerShell utility</p>
-        <h2 className="mt-4 text-3xl font-medium tracking-[-0.05em] text-white sm:text-5xl">
-          Temporary exam key blocker
-        </h2>
-        <p className="mt-5 max-w-2xl text-sm leading-7 text-white/55 sm:text-base">
-          Copy the provided Windows PowerShell script to your clipboard. It installs a low-level keyboard hook and blocks the Windows keys and Alt+Tab/Ctrl+Tab while it is running. It does not run automatically from this site.
-        </p>
-        <div className="mt-6 rounded-xl border border-amber-300/20 bg-amber-300/[0.06] p-4 text-sm leading-6 text-amber-100/80">
-          Use only on a device you own or are authorized to administer, with the affected user informed. Blocking system shortcuts can interrupt normal access to the computer. Ctrl+Alt+F12 exits the script.
-        </div>
-        <button
-          type="button"
-          onClick={copyScript}
-          className="button-primary focus-ring mt-7 inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold text-black"
-        >
-          {status === "Script copied to clipboard." ? <Check size={16} /> : <Copy size={16} />}
-          Copy PowerShell script
-        </button>
-        <p className="mt-3 min-h-5 text-sm text-white/50" aria-live="polite">{status}</p>
-      </div>
-    </section>
+  if (!mount) return null;
+
+  return createPortal(
+    <>
+      <button
+        type="button"
+        onClick={copyScript}
+        title="Copies the script only; it does not run it. The script blocks system shortcuts while active."
+        className="button-secondary focus-ring inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-medium text-white/70 hover:text-white"
+      >
+        {copied ? <Check size={15} /> : <Copy size={15} />}
+        {copied ? "Copied!" : "Copy script"}
+      </button>
+      <span className="sr-only" aria-live="polite">{error}</span>
+    </>,
+    mount,
   );
 }
