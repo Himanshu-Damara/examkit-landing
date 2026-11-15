@@ -11,7 +11,6 @@ import {
   Download,
   ExternalLink,
   Globe2,
-  Github,
   Layers3,
   Menu,
   MousePointer2,
@@ -78,12 +77,12 @@ const faqs = [
   {
     question: "How do I install ExamKit?",
     answer:
-      "Open Microsoft Edge, visit the official ExamKit Edge Add-ons listing, click Get, and approve the installation prompt. The destination is configurable and is not enabled until the real listing URL is supplied.",
+      "Open Microsoft Edge, visit the official ExamKit Edge Add-ons listing, click Get, and approve the installation prompt. The destination is configurable and is not enabled until the real listing URL is provided.",
   },
   {
     question: "Is ExamKit free?",
     answer:
-      "Pricing is not documented in the project currently available, so this page does not make a pricing claim. Add verified pricing copy here once the official listing or product documentation is ready.",
+      "Pricing is not documented in the project currently available, so this page does not make a pricing claim. Add verified pricing copy here once the official listing or product documentation is available.",
   },
   {
     question: "Which browsers are supported?",
@@ -364,11 +363,6 @@ export default function LandingPage() {
           </div>
 
           <div className="hidden items-center gap-3 lg:flex">
-            {siteConfig.links.github ? (
-              <a href={siteConfig.links.github} className="focus-ring rounded-full p-2 text-white/45 transition hover:bg-white/10 hover:text-white" aria-label="Open GitHub">
-                <Github size={16} />
-              </a>
-            ) : null}
             <InstallLink className="focus-ring button-primary rounded-full px-4 py-2.5 text-xs font-semibold text-black">
               <span className="flex items-center gap-2">Install Extension <ArrowUpRight size={14} /></span>
             </InstallLink>
@@ -574,7 +568,6 @@ export default function LandingPage() {
           <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-xs text-white/35">
             {siteConfig.links.privacy ? <a href={siteConfig.links.privacy} className="focus-ring hover:text-white/80">Privacy</a> : <span title="Add a verified privacy policy URL before publishing" className="cursor-not-allowed text-white/20">Privacy</span>}
             {siteConfig.links.contact ? <a href={siteConfig.links.contact} className="focus-ring hover:text-white/80">Contact</a> : <span title="Add a verified contact destination before publishing" className="cursor-not-allowed text-white/20">Contact</span>}
-            {siteConfig.links.github ? <a href={siteConfig.links.github} className="focus-ring inline-flex items-center gap-1.5 hover:text-white/80"><Github size={13} /> GitHub</a> : null}
             <span className="text-white/20">© {new Date().getFullYear()} OMEN</span>
           </div>
         </div>
