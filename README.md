@@ -1,6 +1,6 @@
 # ExamKit · OMEN
 
-Premium landing page for the ExamKit browser extension. This is a standalone Next.js App Router site for Vercel; it does **not** contain or modify the extension source, self-host extension files, or implement an update service.
+Premium landing page for the ExamKit browser extension. This is a standalone Next.js App Router site for Vercel; it does not contain or modify the extension source or self-host extension files.
 
 Project profile: https://github.com/Himanshu-Damara
 
@@ -11,7 +11,6 @@ Project profile: https://github.com/Himanshu-Damara
 - Tailwind CSS
 - Framer Motion
 - Lucide React
-- Vercel-compatible static/server-rendered frontend
 
 ## Local development
 
@@ -19,15 +18,15 @@ Requirements: Node.js 18.17+ (Node 20 LTS is recommended) and npm.
 
 ```bash
 npm install
-copy .env.example .env.local
+cp .env.example .env.local
 npm run dev
 ```
 
 Then open `http://localhost:3000`.
 
-## Required production configuration
+## Production configuration
 
-The official Microsoft Edge Add-ons URL is intentionally not invented. Set it only after the real ExamKit listing exists:
+Set these environment variables in the deployment environment:
 
 ```env
 NEXT_PUBLIC_SITE_URL=https://your-real-domain.example
@@ -35,17 +34,7 @@ NEXT_PUBLIC_EXAMKIT_LISTING_URL=https://microsoftedge.microsoft.com/addons/detai
 NEXT_PUBLIC_EXAMKIT_DOWNLOAD_URL=https://drive.google.com/your-verified-release-link
 ```
 
-Until `NEXT_PUBLIC_EXAMKIT_LISTING_URL` is set, every install CTA remains visibly disabled and explains which variable is missing. This avoids presenting a fake or broken production destination as a working link.
-
-`NEXT_PUBLIC_SITE_URL` is used for canonical metadata, Open Graph URLs, `sitemap.xml`, and `robots.txt`. Replace the example value before deployment.
-
-`NEXT_PUBLIC_EXAMKIT_DOWNLOAD_URL` powers the **Download package** buttons. It can point to a verified Google Drive share URL or another release host. Until it is set, the buttons remain visibly disabled rather than presenting a fake destination.
-
-## Restricting production access
-
-Set `ACCESS_ALLOWED_IPS` to a comma-separated list of allowed public IP addresses in the production environment (for example, in Vercel's project environment variables). The normal site is available to an allowlisted IP or after triggering the keyboard shortcut. Other requests receive a 404 response with the “505 NOT FOUND / Access Denied” page. If the IP list is empty, the normal site is restricted until a visitor uses the shortcut. Local development is not restricted.
-
-On the denial page, press **Ctrl+Shift+K** to open the main site directly. This is only an obscured display gate, not security: anyone can press the shortcut or call its public unlock endpoint. For real access control, use `ACCESS_ALLOWED_IPS` and do not enable this bypass. Shortcut access lasts 12 hours in an HTTP-only cookie. The allowlist uses the client address from the trusted deployment proxy's `X-Forwarded-For` header. Keep the app behind Vercel or another proxy that sets this header; do not expose the app directly to untrusted clients. If your public IP changes, update the allowlist and redeploy.
+The install and download links remain disabled until their corresponding verified URLs are configured. Replace the example site URL before deploying so canonical metadata, the sitemap, and robots directives use the real domain.
 
 ## Checks
 
@@ -57,13 +46,10 @@ npm run build
 
 ## Deploy to Vercel
 
-1. Push this project to a Git provider.
-2. Import the repository into Vercel.
-3. Add `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_EXAMKIT_LISTING_URL`, and (when ready) `NEXT_PUBLIC_EXAMKIT_DOWNLOAD_URL` in the Vercel project environment variables for Production. Configure `ACCESS_ALLOWED_IPS` if you want to limit access by IP.
-4. Deploy. Vercel detects the Next.js build automatically.
+Import the repository into Vercel, configure the production environment variables above, and deploy. Vercel detects the Next.js build automatically.
 
-There is no database, backend, extension self-hosting, CRX download flow, `updates.xml`, or extension `update_url` in this project. Microsoft Edge Add-ons remains the distribution channel.
+There is no database, extension self-hosting, CRX download flow, `updates.xml`, or extension `update_url` in this project. Microsoft Edge Add-ons remains the distribution channel.
 
 ## Content note
 
-No ExamKit extension repository or README was present in the workspace when this site was created. Product copy is therefore limited to the verified brief: ExamKit is an OMEN browser extension distributed through Microsoft Edge Add-ons. Replace the intentionally conservative FAQ and feature copy with verified extension details once the extension README/listing is available.
+Product copy is limited to the currently verified brief: ExamKit is an OMEN browser extension distributed through Microsoft Edge Add-ons. Add further feature, pricing, and support claims only when verified product documentation is available.
