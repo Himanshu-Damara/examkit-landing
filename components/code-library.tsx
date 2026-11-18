@@ -52,6 +52,7 @@ function highlighted(line: string) {
 
 export default function CodeLibrary() {
   const [problems, setProblems] = useState<Problem[]>([]);
+  const [statements, setStatements] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
@@ -61,17 +62,25 @@ export default function CodeLibrary() {
 
   useEffect(() => {
     let mounted = true;
-    fetch("/problems.txt")
-      .then(async (response) => {
+    Promise.all([
+      fetch("/problems.txt").then((response) => {
         if (!response.ok) throw new Error("Could not load the source code file.");
         return response.text();
-      })
-      .then((content) => {
+      }),
+      fetch("/problem-statements.json").then((response) => {
+        if (!response.ok) throw new Error("Could not load the problem statements.");
+        return response.json() as Promise<Record<string, string>>;
+      }),
+    ])
+      .then(([content, sourceStatements]) => {
         const parsed = parseProblems(content);
         if (parsed.length !== 18 || parsed.some((problem) => problem.files.length === 0)) {
           throw new Error("The data file does not contain all 18 complete problem entries.");
         }
-        if (mounted) setProblems(parsed);
+        if (mounted) {
+          setProblems(parsed);
+          setStatements(sourceStatements);
+        }
       })
       .catch((cause: unknown) => {
         if (mounted) setError(cause instanceof Error ? cause.message : "Failed to load problems.");
@@ -165,6 +174,12 @@ export default function CodeLibrary() {
                       <div className="mb-2 font-mono text-xs text-[#69e6ff]">EXPERIMENT {selected.experiment} / PROBLEM {String(selected.number).padStart(2, "0")}</div>
                       <h3 className="text-xl font-semibold text-white sm:text-2xl">{selected.title}</h3>
                       <p className="mt-2 text-xs text-white/40">{selected.files.length} source {selected.files.length === 1 ? "file" : "files"} · Original submission</p>
+                      {statements[String(selected.number)] && (
+                        <details className="group mt-5 overflow-hidden rounded-xl border border-white/10 bg-white/[0.025]">
+                          <summary className="cursor-pointer select-none px-4 py-3 text-sm font-medium text-white/75 hover:text-white">View original problem statement</summary>
+                          <div className="max-h-72 overflow-auto border-t border-white/10 px-4 py-4 text-xs leading-6 text-white/55 whitespace-pre-wrap">{statements[String(selected.number)]}</div>
+                        </details>
+                      )}
                     </header>
 
                     <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 px-4 pt-3 sm:px-6">
