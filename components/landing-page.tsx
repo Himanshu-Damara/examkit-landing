@@ -26,6 +26,7 @@ const navItems = [
   { label: "Home", href: "#home" },
   { label: "Features", href: "#features" },
   { label: "Installation", href: "#installation" },
+  { label: "Code Library", href: "#code-library" },
   { label: "FAQ", href: "#faq" },
 ];
 
