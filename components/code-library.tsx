@@ -32,7 +32,7 @@ function highlighted(line: string) {
   const pieces: React.ReactNode[] = [];
   let cursor = 0;
   const regex = new RegExp(keywordPattern.source, "g");
-  for (const match of line.matchAll(regex)) {
+  for (const match of Array.from(line.matchAll(regex))) {
     const offset = match.index ?? 0;
     if (offset > cursor) pieces.push(line.slice(cursor, offset));
     const value = match[0];
