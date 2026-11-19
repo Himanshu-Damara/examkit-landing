@@ -1,5 +1,6 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
+import SimpleCodeViewer from "@/components/simple-code-viewer";
 
 type SourceFile = { name: string; code: string };
 type Problem = { number: number; title: string; files: SourceFile[] };
@@ -27,22 +28,7 @@ export default async function Home() {
 
   return (
     <main className="mx-auto max-w-5xl px-4 py-10 sm:px-8">
-      <h1 className="mb-10 text-3xl font-bold text-white">All 18 Problem Codes</h1>
-      {problems.map((problem) => (
-        <section key={problem.number} className="mb-12">
-          <h2 className="mb-5 text-xl font-semibold text-white">
-            {problem.number}. {problem.title}
-          </h2>
-          {problem.files.map((file, index) => (
-            <div key={index} className="mb-6">
-              <h3 className="mb-2 font-mono text-sm text-white/70">{file.name}</h3>
-              <pre className="overflow-x-auto rounded-lg border border-white/10 bg-[#111118] p-4 font-mono text-xs leading-6 text-white/90 sm:text-sm">
-                <code>{file.code}</code>
-              </pre>
-            </div>
-          ))}
-        </section>
-      ))}
+      <SimpleCodeViewer problems={problems} />
     </main>
   );
 }
