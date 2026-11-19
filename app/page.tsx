@@ -1,5 +1,48 @@
-import CodeLibrary from "@/components/code-library";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
 
-export default function Home() {
-  return <main><CodeLibrary /></main>;
+type SourceFile = { name: string; code: string };
+type Problem = { number: number; title: string; files: SourceFile[] };
+
+function parseCodes(text: string): Problem[] {
+  const headings = Array.from(text.matchAll(/^Problem (\d+): (.+)$/gm));
+  return headings.map((heading, index) => {
+    const start = (heading.index ?? 0) + heading[0].length;
+    const end = index + 1 < headings.length ? headings[index + 1].index : text.length;
+    const section = text.slice(start, end);
+    const markers = Array.from(section.matchAll(/^FILE:\s*(.+)\r?\n-{3,}[ \t]*\r?\n/gm));
+    const files = markers.map((marker, fileIndex) => {
+      const fileStart = (marker.index ?? 0) + marker[0].length;
+      const fileEnd = fileIndex + 1 < markers.length ? markers[fileIndex + 1].index : section.length;
+      const code = section.slice(fileStart, fileEnd).replace(/\n+={15,}\s*$/, "").trimEnd();
+      return { name: marker[1].trim(), code };
+    });
+    return { number: Number(heading[1]), title: heading[2].trim(), files };
+  });
+}
+
+export default async function Home() {
+  const source = await readFile(path.join(process.cwd(), "public", "problems.txt"), "utf8");
+  const problems = parseCodes(source);
+
+  return (
+    <main className="mx-auto max-w-5xl px-4 py-10 sm:px-8">
+      <h1 className="mb-10 text-3xl font-bold text-white">All 18 Problem Codes</h1>
+      {problems.map((problem) => (
+        <section key={problem.number} className="mb-12">
+          <h2 className="mb-5 text-xl font-semibold text-white">
+            {problem.number}. {problem.title}
+          </h2>
+          {problem.files.map((file, index) => (
+            <div key={index} className="mb-6">
+              <h3 className="mb-2 font-mono text-sm text-white/70">{file.name}</h3>
+              <pre className="overflow-x-auto rounded-lg border border-white/10 bg-[#111118] p-4 font-mono text-xs leading-6 text-white/90 sm:text-sm">
+                <code>{file.code}</code>
+              </pre>
+            </div>
+          ))}
+        </section>
+      ))}
+    </main>
+  );
 }
