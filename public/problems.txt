@@ -2,11 +2,9 @@ ALL 18 PROBLEMS — ORIGINAL SUBMITTED CODE IN PLAIN TEXT
 
 Extracted from the 18 uploaded PDFs. PDF line wrapping may require cleanup.
 
-
 ===========================================================================
 Problem 1: SecureAuth - Password
 ===========================================================================
-
 
 FILE: index.js
 ---------------------------------------------
@@ -76,11 +74,9 @@ hashed));
 export { hashPassword, verifyPassword, generateToken, decodeToken,
 AUTH_SECRET_KEY };
 
-
 ===========================================================================
 Problem 2: User Authentication API
 ===========================================================================
-
 
 FILE: src/index.js
 ---------------------------------------------
@@ -247,19 +243,17 @@ app.listen(PORT, () => {
 export default app;
 export { hashPassword, verifyPassword, JWT_SECRET };
 
-
 ===========================================================================
 Problem 3: Authentication System
 ===========================================================================
 
-
 FILE: src/index.js
 ---------------------------------------------
 import express from "express";
- import cors from "cors";
- import path from "path";
- import bcrypt from "bcryptjs";
- import jwt from "jsonwebtoken";
+import cors from "cors";
+import path from "path";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 import { fileURLToPath } from "url";
 
 const app = express();
@@ -291,304 +285,300 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, "../public")));
 
 /**
- * --------------------------------------------------
- * TASK 1: Hash a Password
- * --------------------------------------------------
- */
+* --------------------------------------------------
+* TASK 1: Hash a Password
+* --------------------------------------------------
+*/
 function hashPassword(password) {
-  const salt = bcrypt.genSaltSync(SALT_ROUNDS);
-  const hash = bcrypt.hashSync(password, salt);
-  return hash;
+ const salt = bcrypt.genSaltSync(SALT_ROUNDS);
+ const hash = bcrypt.hashSync(password, salt);
+ return hash;
 }
 
 /**
- * --------------------------------------------------
- * TASK 2: Verify a Password
- * --------------------------------------------------
- */
+* --------------------------------------------------
+* TASK 2: Verify a Password
+* --------------------------------------------------
+*/
 function verifyPassword(password, storedHash) {
-  return bcrypt.compareSync(password, storedHash);
+ return bcrypt.compareSync(password, storedHash);
 }
 
 /**
- * --------------------------------------------------
- * TASK 5: verifyToken Middleware
- * --------------------------------------------------
- */
+* --------------------------------------------------
+* TASK 5: verifyToken Middleware
+* --------------------------------------------------
+*/
 function verifyToken(req, res, next) {
-  const authHeader = req.headers.authorization;
+ const authHeader = req.headers.authorization;
 
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(401).json({
-      message: "No token provided"
-    });
-  }
+ if (!authHeader || !authHeader.startsWith("Bearer ")) {
+   return res.status(401).json({
+     message: "No token provided"
+   });
+ }
 
-  const token = authHeader.split(" ")[1];
+ const token = authHeader.split(" ")[1];
 
-  try {
-    const decoded = jwt.verify(token, JWT_SECRET);
-    req.user = decoded;
-    next();
-  } catch (error) {
-    if (error.name === "TokenExpiredError") {
-      return res.status(401).json({
-        message: "Token expired"
-      });
-    }
+ try {
+   const decoded = jwt.verify(token, JWT_SECRET);
+   req.user = decoded;
+   next();
+ } catch (error) {
+   if (error.name === "TokenExpiredError") {
+     return res.status(401).json({
+       message: "Token expired"
+     });
+   }
 
-    return res.status(403).json({
-      message: "Invalid token"
-    });
-  }
+   return res.status(403).json({
+     message: "Invalid token"
+   });
+ }
 }
 
 /**
- * --------------------------------------------------
- * TASK 3: Register a User
- * --------------------------------------------------
- * POST /api/register
- */
+* --------------------------------------------------
+* TASK 3: Register a User
+* --------------------------------------------------
+* POST /api/register
+*/
 app.post("/api/register", (req, res) => {
-  try {
-    const { username, email, password } = req.body;
+ try {
+   const { username, email, password } = req.body;
 
-    // Check required fields
-    if (!username || !email || !password) {
-      return res.status(400).json({
-        message: "Username, email and password are required"
-      });
-    }
+   // Check required fields
+   if (!username || !email || !password) {
+     return res.status(400).json({
+       message: "Username, email and password are required"
+     });
+   }
 
-    // Check duplicate username
-    const existingUser = users.find(
-      user => user.username === username
-    );
+   // Check duplicate username
+   const existingUser = users.find(
+     user => user.username === username
+   );
 
-    if (existingUser) {
-      return res.status(409).json({
-        message: "User already exists"
-      });
-    }
+   if (existingUser) {
+     return res.status(409).json({
+       message: "User already exists"
+     });
+   }
 
-    // Hash password
-    const passwordHash = hashPassword(password);
+   // Hash password
+   const passwordHash = hashPassword(password);
 
-    // Create user
-    const newUser = {
-      id: nextId,
-      username,
-      email,
-      passwordHash
-    };
+   // Create user
+   const newUser = {
+     id: nextId,
+     username,
+     email,
+     passwordHash
+   };
 
-    // Increment ID
-    nextId++;
+   // Increment ID
+   nextId++;
 
-    // Store user
-    users.push(newUser);
+   // Store user
+   users.push(newUser);
 
-    // Return user without password hash
-    return res.status(201).json({
-      message: "User registered successfully",
-      user: {
-        id: newUser.id,
-        username: newUser.username,
-        email: newUser.email
-      }
-    });
+   // Return user without password hash
+   return res.status(201).json({
+     message: "User registered successfully",
+     user: {
+       id: newUser.id,
+       username: newUser.username,
+       email: newUser.email
+     }
+   });
 
-  } catch (error) {
-    return res.status(500).json({
-      message: "Error registering user",
-      error: error.message
-    });
-  }
+ } catch (error) {
+   return res.status(500).json({
+     message: "Error registering user",
+     error: error.message
+   });
+ }
 });
 
 /**
- * --------------------------------------------------
- * TASK 4: Login a User
- * --------------------------------------------------
- * POST /api/login
- */
+* --------------------------------------------------
+* TASK 4: Login a User
+* --------------------------------------------------
+* POST /api/login
+*/
 app.post("/api/login", (req, res) => {
-  try {
-    const { username, password } = req.body;
+ try {
+   const { username, password } = req.body;
 
-    // Check required fields
-    if (!username || !password) {
-      return res.status(400).json({
-        message: "Username and password are required"
-      });
-    }
-    // Find user
-    const user = users.find(
-      user => user.username === username
-    );
+   // Check required fields
+   if (!username || !password) {
+     return res.status(400).json({
+       message: "Username and password are required"
+     });
+   }
+   // Find user
+   const user = users.find(
+     user => user.username === username
+   );
 
-    if (!user) {
-      return res.status(401).json({
-        message: "Invalid credentials"
-      });
-    }
+   if (!user) {
+     return res.status(401).json({
+       message: "Invalid credentials"
+     });
+   }
 
-    // Verify password
-    const isValid = verifyPassword(
-      password,
-      user.passwordHash
-    );
+   // Verify password
+   const isValid = verifyPassword(
+     password,
+     user.passwordHash
+   );
 
-    if (!isValid) {
-      return res.status(401).json({
-        message: "Invalid credentials"
-      });
-    }
+   if (!isValid) {
+     return res.status(401).json({
+       message: "Invalid credentials"
+     });
+   }
 
-    // Generate JWT
-    const token = jwt.sign(
-      {
-        id: user.id,
-        username: user.username
-      },
-      JWT_SECRET,
-      {
-        expiresIn: TOKEN_EXPIRY
-      }
-    );
+   // Generate JWT
+   const token = jwt.sign(
+     {
+       id: user.id,
+       username: user.username
+     },
+     JWT_SECRET,
+     {
+       expiresIn: TOKEN_EXPIRY
+     }
+   );
 
-    return res.status(200).json({
-      message: "Login successful",
-      token
-    });
+   return res.status(200).json({
+     message: "Login successful",
+     token
+   });
 
-  } catch (error) {
-    return res.status(500).json({
-      message: "Error logging in",
-      error: error.message
-    });
-  }
+ } catch (error) {
+   return res.status(500).json({
+     message: "Error logging in",
+     error: error.message
+   });
+ }
 });
 
 /**
- * --------------------------------------------------
- * TASK 6: Protected Profile Route
- * --------------------------------------------------
- * GET /api/profile
- */
+* --------------------------------------------------
+* TASK 6: Protected Profile Route
+* --------------------------------------------------
+* GET /api/profile
+*/
 app.get("/api/profile", verifyToken, (req, res) => {
-  try {
-    // Get ID from decoded JWT
-    const userId = req.user.id;
+ try {
+   // Get ID from decoded JWT
+   const userId = req.user.id;
 
-    // Find user by ID
-    const user = users.find(
-      user => user.id === userId
-    );
+   // Find user by ID
+   const user = users.find(
+     user => user.id === userId
+   );
 
-    if (!user) {
-      return res.status(404).json({
-        message: "User not found"
-      });
-    }
+   if (!user) {
+     return res.status(404).json({
+       message: "User not found"
+     });
+   }
 
-    // Return profile without password hash
-    return res.status(200).json({
-      message: "Profile fetched successfully",
-      user: {
-        id: user.id,
-        username: user.username,
-        email: user.email
-      }
-    });
+   // Return profile without password hash
+   return res.status(200).json({
+     message: "Profile fetched successfully",
+     user: {
+       id: user.id,
+       username: user.username,
+       email: user.email
+     }
+   });
 
-  } catch (error) {
-    return res.status(500).json({
-      message: "Error fetching profile",
-      error: error.message
-    });
-  }
+ } catch (error) {
+   return res.status(500).json({
+     message: "Error fetching profile",
+     error: error.message
+   });
+ }
 });
 
 // Server
 app.listen(PORT, () => {
-  console.log(`  Server running at http://localhost:${PORT}`);
+ console.log(`  Server running at http://localhost:${PORT}`);
 });
 
 export default app;
 export {
-  hashPassword,
-  verifyPassword,
-  verifyToken,
-  JWT_SECRET,
-  TOKEN_EXPIRY
+ hashPassword,
+ verifyPassword,
+ verifyToken,
+ JWT_SECRET,
+ TOKEN_EXPIRY
 };
-
 
 ===========================================================================
 Problem 4: EventMaster - Digital Ticket
 ===========================================================================
 
-
 FILE: index.js
 ---------------------------------------------
 import jwt from "jsonwebtoken";
 
- // Secret key for signing and verifying tickets
+// Secret key for signing and verifying tickets
 const TICKET_SECRET_KEY = "SUPER_SECRET_EVENTMASTER_KEY";
 
 // Generate a digital ticket (JWT)
 function generateTicket(attendeeId, eventName) {
-    const payload = {
-        attendeeId,
-        eventName
-    };
+   const payload = {
+       attendeeId,
+       eventName
+   };
 
-    const token = jwt.sign(
-        payload,
-        TICKET_SECRET_KEY,
-        { expiresIn: "24h" }
-    );
+   const token = jwt.sign(
+       payload,
+       TICKET_SECRET_KEY,
+       { expiresIn: "24h" }
+   );
 
-    return token;
+   return token;
 }
 
 // Verify a digital ticket (JWT)
 function verifyTicket(ticket) {
-    try {
-        const decoded = jwt.verify(
-            ticket,
-            TICKET_SECRET_KEY
-        );
+   try {
+       const decoded = jwt.verify(
+           ticket,
+           TICKET_SECRET_KEY
+       );
 
-        return decoded;
-    } catch (error) {
-        return null;
-    }
+       return decoded;
+   } catch (error) {
+       return null;
+   }
 }
 
 // Do not modify this
 // --- Example Usage ---
 if (process.env.NODE_ENV !== "test") {
-    // example usage
-    const myTicket = generateTicket("12345", "Rock Concert 2025");
-    console.log("Generated Ticket:", myTicket);
+   // example usage
+   const myTicket = generateTicket("12345", "Rock Concert 2025");
+   console.log("Generated Ticket:", myTicket);
 
-    const verified = verifyTicket(myTicket);
-    console.log("Verified Ticket Payload:", verified);
+   const verified = verifyTicket(myTicket);
+   console.log("Verified Ticket Payload:", verified);
 
-    const invalid = verifyTicket("fake.token.value");
-    console.log("Invalid Ticket:", invalid);
+   const invalid = verifyTicket("fake.token.value");
+   console.log("Invalid Ticket:", invalid);
 }
 
 // Export for testing
 export { generateTicket, verifyTicket, TICKET_SECRET_KEY };
 
-
 ===========================================================================
 Problem 5: Books Management APIs
 ===========================================================================
-
 
 FILE: src/index.js
 ---------------------------------------------
@@ -714,40 +704,28 @@ app.listen(PORT, () => {
 
 export default app;
 
-
 ===========================================================================
 Problem 6: Connecting a Student
 ===========================================================================
 
-
 FILE: index.js
 ---------------------------------------------
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
+// Connection string for the lab environment
 const MONGO_URI = "mongodb://127.0.0.1:27017/studentdb";
 
+// Task 2: Define studentSchema
 const studentSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: true
-    },
-    age: {
-        type: Number,
-        required: true
-    },
-    email: {
-        type: String,
-       required: true,
-       unique: true
-   },
-   course: {
-       type: String,
-       required: true
-   }
+    name: { type: String, required: true },
+    age: { type: Number, required: true },
+    email: { type: String, required: true, unique: true },
+    course: { type: String, required: true }
 });
 
+// Task 3: Create the Student model
 const Student = mongoose.model("Student", studentSchema, "students");
-
+// Tasks 1, 4 and 5: Connect, save and close
 async function main() {
    try {
        await mongoose.connect(MONGO_URI);
@@ -761,135 +739,29 @@ async function main() {
        });
 
        const savedStudent = await student.save();
-
        console.log("Student saved:");
        console.log(savedStudent);
 
    } catch (error) {
        console.log(error.message);
    } finally {
-       await mongoose.disconnect();
+       await mongoose.connection.close();
    }
 }
 
 main();
-
-import mongoose from "mongoose";
-
-const MONGO_URI = "mongodb://127.0.0.1:27017/studentdb";
-
-const studentSchema = new mongoose.Schema({
-   name: {
-       type: String,
-       required: true
-   },
-   age: {
-       type: Number,
-       required: true
-   },
-   email: {
-       type: String,
-       required: true,
-       unique: true
-   },
-   course: {
-       type: String,
-       required: true
-   }
-});
-
-const Student = mongoose.model("Student", studentSchema, "students");
-
-async function main() {
-   try {
-       await mongoose.connect(MONGO_URI);
-       console.log("Connected to MongoDB");
-
-       const student = new Student({
-           name: "Anita Rao",
-           age: 20,
-           email: "anita.rao@example.com",
-           course: "Computer Science"
-       });
-
-       const savedStudent = await student.save();
-
-       console.log("Student saved:");
-       console.log(savedStudent);
-
-   } catch (error) {
-       console.log(error.message);
-   } finally {
-       await mongoose.disconnect();
-   }
-}
-
-main();
-
-import mongoose from "mongoose";
-
-const MONGO_URI = "mongodb://127.0.0.1:27017/studentdb";
-
-const studentSchema = new mongoose.Schema({
-   name: {
-       type: String,
-       required: true
-   },
-   age: {
-       type: Number,
-       required: true
-   },
-   email: {
-       type: String,
-       required: true,
-       unique: true
-   },
-   course: {
-       type: String,
-       required: true
-   }
-});
-
-const Student = mongoose.model("Student", studentSchema, "students");
-
-async function main() {
-   try {
-       await mongoose.connect(MONGO_URI);
-       console.log("Connected to MongoDB");
-
-       const student = new Student({
-           name: "Anita Rao",
-           age: 20,
-           email: "anita.rao@example.com",
-           course: "Computer Science"
-       });
-
-       const savedStudent = await student.save();
-
-       console.log("Student saved:");
-       console.log(savedStudent);
-
-   } catch (error) {
-       console.log(error.message);
-   } finally {
-       await mongoose.disconnect();
-   }
-}
-
-main();
-
 
 ===========================================================================
 Problem 7: Schema Validation and
 ===========================================================================
 
-
 FILE: index.js
 ---------------------------------------------
 import mongoose from "mongoose";
 
 const MONGO_URI = "mongodb://127.0.0.1:27017/studentdb";
 
+// Task 2: Define studentSchema
 const studentSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -917,85 +789,81 @@ const studentSchema = new mongoose.Schema({
     }
 });
 
+// Task 3: Create Student model
 const Student = mongoose.model("Student", studentSchema, "students");
-
 async function main() {
-    try {
-await mongoose.connect(MONGO_URI);
-console.log("Connected to MongoDB");
+   try {
+       // Task 1: Connect to MongoDB
+       await mongoose.connect(MONGO_URI);
+       console.log("Connected to MongoDB");
 
-await Student.deleteMany({
-   email: {
-       $in: [
-           "anita.rao@example.com",
-           "rahul.mehta@example.com",
-           "priya.sharma@example.com"
-       ]
-   }
-});
+       // Task 4: Create three students
+       const students = await Student.create([
+           {
+               name: "Anita Rao",
+               age: 20,
+               email: "anita.rao@example.com",
+               course: "Computer Science"
+           },
+           {
+               name: "Rahul Mehta",
+               age: 21,
+               email: "rahul.mehta@example.com",
+               course: "Data Science"
+           },
+           {
+               name: "Priya Sharma",
+               age: 22,
+               email: "priya.sharma@example.com",
+               course: "Electronics"
+           }
+       ]);
 
-const students = await Student.create([
-   {
-       name: "Anita Rao",
-       age: 20,
-       email: "anita.rao@example.com",
-       course: "Computer Science"
-   },
-   {
-       name: "Rahul Mehta",
-       age: 21,
-       email: "rahul.mehta@example.com",
-       course: "Data Science"
-   },
-   {
-       name: "Priya Sharma",
-       age: 22,
-       email: "priya.sharma@example.com",
-       course: "Electronics"
-   }
-]);
+       console.log("Students created successfully");
 
-console.log("Students created successfully");
+       // Task 5(a): Find all students
+       const allStudents = await Student.find();
+       console.log("All students:");
+       console.log(allStudents);
 
-const allStudents = await Student.find();
-console.log("All students:");
-console.log(allStudents);
+       // Task 5(b): Find Rahul by ID
+       const rahulId = students[1]._id;
+       const foundStudent = await Student.findById(rahulId);
 
-const foundStudent = await Student.findById(students[1]._id);
-console.log("Student found by ID:");
-console.log(foundStudent);
+       console.log("Student found by ID:");
+       console.log(foundStudent);
 
-const updatedStudent = await Student.findByIdAndUpdate(
-   students[1]._id,
-   { age: 23 },
-   { new: true, runValidators: true }
-);
-
-console.log("Student updated:");
-console.log(updatedStudent);
-
-const deletedStudent = await Student.findByIdAndDelete(
-           students[2]._id
+       // Task 5(c): Update Rahul's age to 23
+       const updatedStudent = await Student.findByIdAndUpdate(
+           rahulId,
+           { age: 23 },
+           { new: true, runValidators: true }
        );
+
+       console.log("Student updated:");
+       console.log(updatedStudent);
+
+       // Task 5(d): Delete Priya by ID
+       const priyaId = students[2]._id;
+       const deletedStudent = await Student.findByIdAndDelete(priyaId);
 
        console.log("Student deleted:");
        console.log(deletedStudent);
 
    } catch (error) {
-       console.log(error.message);
+       console.error("Error:", error.message);
    } finally {
-       await mongoose.disconnect();
+       // Task 6: Close MongoDB connection
+       await mongoose.connection.close();
        console.log("MongoDB connection closed");
    }
 }
 
 main();
 
-
 ===========================================================================
 Problem 8: References, Populate and
 ===========================================================================
-
 
 FILE: index.js
 ---------------------------------------------
@@ -1003,100 +871,106 @@ const mongoose = require("mongoose");
 
 const MONGO_URI = "mongodb://127.0.0.1:27017/studentdb";
 
-async function main() {
-    try {
-        await mongoose.connect(MONGO_URI);
-        console.log("Connected to MongoDB");
+// Task 2: Define Course Schema
+const courseSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true
+    },
+    code: {
+        type: String,
+        required: true,
+        unique: true
+    }
+});
 
-        const courseSchema = new mongoose.Schema({
-            name: {
-                type: String,
-                required: true
-            },
-            code: {
-                type: String,
-                required: true,
-                unique: true
-            }
-        });
+const Course = mongoose.model("Course", courseSchema, "courses");
 
-        const Course = mongoose.model("Course", courseSchema, "courses");
+// Task 3: Define Student Schema
+const studentSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true
+    },
+    age: {
+        type: Number,
+        required: true
+    },
+    email: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    course: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Course"
+    }
+});
 
-        const studentSchema = new mongoose.Schema({
-            name: {
-                type: String,
-                required: true
-            },
-            age: {
-                type: Number,
-                required: true
-            },
-            email: {
-                type: String,
-                required: true,
-                unique: true
-            },
-            course: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: "Course"
-            }
-        });
 const Student = mongoose.model("Student", studentSchema, "students");
 
-const courses = await Course.create([
-   { name: "Computer Science", code: "CS" },
-   { name: "Data Science", code: "DS" },
-   { name: "Electronics", code: "EC" },
-   { name: "Mechanical", code: "ME" }
-]);
+async function main() {
+try {
+   // Task 1: Connect to MongoDB
+   await mongoose.connect(MONGO_URI);
+   console.log("Connected to MongoDB");
 
-const cs = courses[0]._id;
-const ds = courses[1]._id;
-const ec = courses[2]._id;
-const me = courses[3]._id;
+   // Remove old records to avoid duplicate errors
+   await Student.deleteMany({});
+   await Course.deleteMany({});
 
-await Student.create([
-   {
-       name: "Anita Rao",
-       age: 20,
-       email: "anita.rao@example.com",
-       course: cs
-   },
-   {
-       name: "Rahul Mehta",
-       age: 21,
-       email: "rahul.mehta@example.com",
-       course: ds
-   },
-   {
-       name: "Priya Sharma",
-       age: 22,
-       email: "priya.sharma@example.com",
-       course: ec
-   },
-   {
-       name: "Aman Verma",
-       age: 19,
-       email: "aman.verma@example.com",
-       course: cs
-   },
-   {
-       name: "Neha Singh",
-       age: 23,
-       email: "neha.singh@example.com",
-       course: ds
-   },
-   {
-       name: "Arjun Kumar",
-       age: 24,
-       email: "arjun.kumar@example.com",
-       course: me
-   }
-]);
+   // Task 4: Create courses
+   const courses = await Course.create([
+       { name: "Computer Science", code: "CS" },
+       { name: "Data Science", code: "DS" },
+       { name: "Electronics", code: "EC" },
+       { name: "Mechanical", code: "ME" }
+   ]);
 
-const populatedStudents = await Student.find().populate("course");
+   // Create students using course ObjectIds
+   await Student.create([
+       {
+           name: "Anita Rao",
+           age: 20,
+           email: "anita.rao@example.com",
+           course: courses[0]._id
+       },
+       {
+           name: "Rahul Mehta",
+           age: 21,
+           email: "rahul.mehta@example.com",
+           course: courses[1]._id
+       },
+       {
+           name: "Priya Sharma",
+           age: 22,
+           email: "priya.sharma@example.com",
+           course: courses[2]._id
+       },
+       {
+           name: "Aman Verma",
+           age: 19,
+           email: "aman.verma@example.com",
+           course: courses[0]._id
+       },
+       {
+           name: "Neha Singh",
+           age: 23,
+           email: "neha.singh@example.com",
+           course: courses[1]._id
+       },
+       {
+           name: "Arjun Kumar",
+           age: 24,
+           email: "arjun.kumar@example.com",
+           course: courses[3]._id
+           }
+       ]);
+
+       // Task 5: Populate course details
+       const populatedStudents = await Student.find().populate("course");
+
        console.log("nStudents with course details:");
-
        populatedStudents.forEach(student => {
            console.log(
                `${student.name} - ${student.course.name}
@@ -1104,83 +978,76 @@ const populatedStudents = await Student.find().populate("course");
            );
        });
 
-       const csStudents = await Student.find({ course: cs });
+       // Task 6: Filter Computer Science students
+       const csStudents = await Student.find({
+           course: courses[0]._id
+       });
 
        console.log("nComputer Science students:");
-
        csStudents.forEach(student => {
            console.log(student.name);
        });
 
-       const searchedStudents = await Student.find({
+       // Task 7: Search by name using regex
+       const matchingStudents = await Student.find({
            name: { $regex: "ar", $options: "i" }
        });
 
        console.log("nStudents matching search:");
-
-       searchedStudents.forEach(student => {
+       matchingStudents.forEach(student => {
            console.log(student.name);
        });
 
+       // Task 8: Sort by age ascending
        const sortedStudents = await Student.find().sort({ age: 1 });
 
        console.log("nStudents sorted by age:");
-
        sortedStudents.forEach(student => {
            console.log(`${student.name} - ${student.age}`);
        });
 
-       const page = 2;
-       const pageSize = 2;
-
+       // Task 9: Pagination - Page 2, size 2
        const paginatedStudents = await Student.find()
            .sort({ age: 1 })
-           .skip((page - 1) * pageSize)
-           .limit(pageSize);
+           .skip(2)
+           .limit(2);
 
        console.log("nPaginated students:");
-
        paginatedStudents.forEach(student => {
            console.log(`${student.name} - ${student.age}`);
        });
 
    } catch (error) {
-       console.log(error.message);
+       console.error("Error:", error.message);
    } finally {
-       await mongoose.disconnect();
+       // Task 10: Close connection
+       await mongoose.connection.close();
        console.log("nMongoDB connection closed");
    }
 }
 
 main();
 
-
 ===========================================================================
 Problem 9: Task - Library Inventory
 ===========================================================================
 
-
 FILE: index.js
 ---------------------------------------------
-// Connect to MongoDB
-db = connect('mongodb://localhost:27017/library_db');
+db = connect("mongodb://localhost:27017/library_db");
 
-// Clear existing collection
+// Clear old records
 db.books.deleteMany({});
 
-// --- STEP 1: CREATE ---
-// Insert a new book document
-
+// STEP 1: CREATE
 db.books.insertOne({
     title: "The Great Gatsby",
-   author: "F. Scott Fitzgerald",
-   copies: 5,
-   is_available: true
+    author: "F. Scott Fitzgerald",
+    copies: 5,
+    is_available: true
 });
 
-// --- STEP 2: READ ---
-// Find the book using its title
-
+// STEP 2: READ
 const book = db.books.findOne({
    title: "The Great Gatsby"
 });
@@ -1188,21 +1055,15 @@ const book = db.books.findOne({
 print("Book after creation:");
 printjson(book);
 
-// --- STEP 3: UPDATE ---
-// Update the book when borrowed
-// Decrease copies by 1 and set availability to false
-
+// STEP 3: UPDATE
 db.books.updateOne(
-   {
-       title: "The Great Gatsby"
-   },
+   { title: "The Great Gatsby" },
    {
        $inc: { copies: -1 },
        $set: { is_available: false }
    }
 );
 
-// Verify update
 const updatedBook = db.books.findOne({
    title: "The Great Gatsby"
 });
@@ -1210,92 +1071,85 @@ const updatedBook = db.books.findOne({
 print("Book after borrowing:");
 printjson(updatedBook);
 
-// --- STEP 4: DELETE ---
-// Delete the book using its title
-
+// STEP 4: DELETE
 db.books.deleteOne({
    title: "The Great Gatsby"
 });
 
-// Verify final collection
-const count = db.books.countDocuments();
+// Verify deletion
+const count = db.books.countDocuments({});
 const allBooks = db.books.find().toArray();
 
 print("Total documents in 'books' collection: " + count);
 printjson(allBooks);
 
-
 ===========================================================================
 Problem 10: Task - Advanced Book
 ===========================================================================
 
-
 FILE: index.js
 ---------------------------------------------
-db = connect('mongodb://localhost:27017/bookstore_db');
+db = connect("mongodb://localhost:27017/bookstore_db");
 
 db.books.deleteMany({});
 
 db.books.insertMany([
-  { title: "Atomic Habits", author: "James Clear", copies: 5, genre: "Self-
+    { title: "Atomic Habits", author: "James Clear", copies: 5, genre: "Self-
 help" },
-  { title: "The Alchemist", author: "Paulo Coelho", copies: 2, genre: "Fiction"
-},
-  { title: "Clean Code", author: "Robert C. Martin", copies: 8, genre:
+    { title: "The Alchemist", author: "Paulo Coelho", copies: 2, genre:
+"Fiction" },
+    { title: "Clean Code", author: "Robert C. Martin", copies: 8, genre:
 "Programming" },
- { title: "Deep Work", author: "Cal Newport", copies: 3, genre: "Self-help" },
- { title: "The Pragmatic Programmer", author: "Andrew Hunt", copies: 6, genre:
-"Programming" }
+   { title: "Deep Work", author: "Cal Newport", copies: 3, genre: "Self-help"
+},
+   { title: "The Pragmatic Programmer", author: "Andrew Hunt", copies: 6,
+genre: "Programming" }
 ]);
 
-
-
-// --- STEP 1: QUERY ($gt) ---
+// STEP 1: QUERY ($gt)
+// Find books where copies > 4
 print("GT Query Result:");
 printjson(
- db.books.find({
-   copies: {$gt:4}
-  }).toArray()
+   db.books.find({
+       copies: { $gt: 4 }
+   }).toArray()
 );
 
-
-
-// --- STEP 2: FILTER ($in) ---
-print("IN Filter Result:");
+// STEP 2: FILTER ($in)
+// Find Self-help or Programming books
+print("nIN Filter Result:");
 printjson(
- db.books.find({
-   genre: { $in: ["Self-help", "Programming"]}
-  }).toArray()
+   db.books.find({
+       genre: { $in: ["Self-help", "Programming"] }
+   }).toArray()
 );
 
-
-
-// --- STEP 3: SEARCH ($regex) ---
-print("Regex Search Result:");
+// STEP 3: SEARCH ($regex)
+// Find titles beginning with "The"
+print("nRegex Search Result:");
 printjson(
- db.books.find({
-   title: { $regex: /^The/}
-  }).toArray()
+   db.books.find({
+       title: { $regex: "^The" }
+   }).toArray()
 );
 
-
-
-// --- STEP 4: PROJECTION ---
-print("Projection Result:");
+// STEP 4: PROJECTION
+// Show only title and author, exclude _id
+print("nProjection Result:");
 printjson(
- db.books.find(
-   {},
-   {
-     title: 1, author: 1, _id: 0
-   }
- ).toArray()
+   db.books.find(
+       {},
+       {
+           title: 1,
+           author: 1,
+           _id: 0
+       }
+   ).toArray()
 );
-
 
 ===========================================================================
 Problem 11: Recipe Book - Insert
 ===========================================================================
-
 
 FILE: backend/db.js
 ---------------------------------------------
@@ -1307,89 +1161,88 @@ const DB_NAME = "recipebook";
 let db;
 
 export async function initDB() {
-  const client = new MongoClient(MONGO_URL);
+    const client = new MongoClient(MONGO_URL);
 
-  await client.connect();
+    await client.connect();
 
-  db = client.db(DB_NAME);
+    db = client.db(DB_NAME);
 
-  const recipesCollection = db.collection("recipes");
+    const recipesCollection = db.collection("recipes");
 
-  await recipesCollection.deleteMany({});
+    await recipesCollection.deleteMany({});
 
-  // TASK 1: insertOne()
-  await recipesCollection.insertOne({
-    title: "Vegetable Sandwich",
-    prep_time_minutes: 10,
-    servings: 2,
-    ingredients: [
-      { name: "Bread", quantity: 4, unit: "slices" },
-      { name: "Tomato", quantity: 1, unit: "piece" },
-      { name: "Cucumber", quantity: 1, unit: "piece" }
-    ],
-    tags: ["vegetarian", "snack"]
-  });
+    // TASK 1: Insert one recipe
+    await recipesCollection.insertOne({
+        title: "Vegetable Sandwich",
+        prep_time_minutes: 10,
+        servings: 2,
+        ingredients: [
+            { name: "Bread", quantity: 4, unit: "slices" },
+            { name: "Tomato", quantity: 1, unit: "piece" },
+            { name: "Cucumber", quantity: 1, unit: "piece" }
+        ],
+        tags: ["Vegetarian", "Breakfast", "Quick"]
+    });
 
-  // TASK 2: insertMany()
-  await recipesCollection.insertMany([
-    {
-      title: "Paneer Curry",
-      prep_time_minutes: 30,
-      servings: 4,
-      ingredients: [
-        { name: "Paneer", quantity: 200, unit: "grams" },
-        { name: "Tomato", quantity: 2, unit: "pieces" },
-        { name: "Onion", quantity: 1, unit: "piece" }
-      ],
-      tags: ["vegetarian", "dinner"]
-    },
-   {
-     title: "Fruit Salad",
-     prep_time_minutes: 10,
-     servings: 2,
-     ingredients: [
-       { name: "Apple", quantity: 2, unit: "pieces" },
-       { name: "Banana", quantity: 2, unit: "pieces" },
-       { name: "Orange", quantity: 1, unit: "piece" }
-     ],
-     tags: ["vegetarian", "healthy"]
-   },
-   {
-     title: "Chicken Rice",
-     prep_time_minutes: 40,
-     servings: 3,
-     ingredients: [
-       { name: "Chicken", quantity: 250, unit: "grams" },
-       { name: "Rice", quantity: 2, unit: "cups" },
-       { name: "Oil", quantity: 2, unit: "tablespoons" }
-     ],
-     tags: ["non-vegetarian", "dinner"]
-   },
-   {
-     title: "Vegetable Pasta",
-     prep_time_minutes: 25,
-     servings: 3,
-     ingredients: [
-       { name: "Pasta", quantity: 200, unit: "grams" },
-       { name: "Capsicum", quantity: 1, unit: "piece" },
-       { name: "Tomato", quantity: 2, unit: "pieces" }
-     ],
-     tags: ["vegetarian", "lunch"]
-   }
- ]);
+    // TASK 2: Insert four more recipes
+    await recipesCollection.insertMany([
+        {
+            title: "Masala Pasta",
+            prep_time_minutes: 25,
+            servings: 3,
+            ingredients: [
+                { name: "Pasta", quantity: 200, unit: "grams" },
+                { name: "Tomato", quantity: 2, unit: "pieces" },
+                { name: "Onion", quantity: 1, unit: "piece" }
+            ],
+            tags: ["Vegetarian", "Dinner"]
+        },
+       {
+           title: "Fruit Salad",
+           prep_time_minutes: 5,
+           servings: 2,
+           ingredients: [
+               { name: "Apple", quantity: 2, unit: "pieces" },
+               { name: "Banana", quantity: 2, unit: "pieces" },
+               { name: "Orange", quantity: 1, unit: "piece" }
+           ],
+           tags: ["Vegetarian", "Healthy", "Quick"]
+       },
+       {
+           title: "Paneer Curry",
+           prep_time_minutes: 35,
+           servings: 4,
+           ingredients: [
+               { name: "Paneer", quantity: 250, unit: "grams" },
+               { name: "Tomato", quantity: 3, unit: "pieces" },
+               { name: "Onion", quantity: 2, unit: "pieces" },
+               { name: "Oil", quantity: 2, unit: "tablespoons" }
+           ],
+           tags: ["Vegetarian", "Lunch", "Dinner"]
+       },
+       {
+           title: "Egg Omelette",
+           prep_time_minutes: 8,
+           servings: 1,
+           ingredients: [
+               { name: "Eggs", quantity: 2, unit: "pieces" },
+               { name: "Onion", quantity: 1, unit: "piece" },
+               { name: "Oil", quantity: 1, unit: "tablespoon" }
+           ],
+           tags: ["Breakfast", "Protein", "Quick"]
+       }
+   ]);
 
- console.log("Recipe Book database initialized");
+   console.log("Recipe Book database initialized");
 }
 
 export function getDB() {
- return db;
+   return db;
 }
-
 
 ===========================================================================
 Problem 12: Recipe Book - Find & Filter
 ===========================================================================
-
 
 FILE: backend/routes.js
 ---------------------------------------------
@@ -1532,11 +1385,9 @@ router.get("/flexible-search", async (req, res) => {
 
 export default router;
 
-
 ===========================================================================
 Problem 13: React + Express Student
 ===========================================================================
-
 
 FILE: backend/server.js
 ---------------------------------------------
@@ -1558,93 +1409,92 @@ app.use(express.json());
 
 app.get("/api/students", (req, res) => {
   try {
-      const data = fs.readFileSync(DB_PATH, "utf8");
-          const students = JSON.parse(data);
+    const data = fs.readFileSync(DB_PATH, "utf8");
+    const students = JSON.parse(data);
 
-              return res.status(200).json(students);
-                } catch (error) {
-                    console.error("Error reading students:", error);
-                        return res.status(500).json({
-                              error: "Failed to load students"
-                                  });
-                                    }
-                                    });
+    return res.status(200).json(students);
+  } catch (error) {
+    console.error("Error reading students:", error);
 
-                                    const server = app.listen(PORT, () => {
-                                      console.log(`Server running on port
-${PORT}`);
-                                      });
+    return res.status(500).json({
+      error: "Failed to load students"
+    });
+  }
+});
 
-                                      export default app;
-                                      export { app, server };
+const server = app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
 
+export default app;
+export { app, server };
 
 FILE: src/App.jsx
 ---------------------------------------------
 import Contacts from "./pages/Contacts";
 
 function App() {
-  return (
-      <Contacts />
-        );
-        }
+  return <Contacts />;
+}
 
-        export default App;
-
+export default App;
 
 FILE: src/pages/Contacts.jsx
 ---------------------------------------------
 import React, { useEffect, useState } from "react";
 
-const API_URL = "/api/students";
+const API_URL = "http://localhost:4000/api/students";
 
 export default function Contacts() {
   const [students, setStudents] = useState([]);
 
-    useEffect(() => {
-        const loadStudents = async () => {
-              try {
-                      const response = await fetch(
-                                "http://localhost:4000/api/students"
-                                        );
+  useEffect(() => {
+    const loadStudents = async () => {
+      try {
+        const response = await fetch(API_URL);
 
-                                                if (!response.ok) {
-                                                          throw new
-Error("Failed to fetch students");
-                                                                  }
+        if (!response.ok) {
+          throw new Error("Failed to fetch students");
+        }
 
-                                                                          const
-data = await response.json();
-setStudents(data);
-} catch (error) {
-console.error("Failed to load students");
+        const data = await response.json();
+        setStudents(data);
+      } catch (error) {
+        console.error("Failed to load students:", error);
+      }
+    };
+
+    loadStudents();
+  }, []);
+
+  return (
+    <div style={{ padding: "20px", fontFamily: "Arial" }}>
+     <h1>Students</h1>
+
+     {students.map((student, index) => (
+       <div
+         key={student.id ?? student._id ?? index}
+         style={{
+           border: "1px solid #ddd",
+           borderRadius: "8px",
+           padding: "15px",
+           marginBottom: "12px",
+           backgroundColor: "#f9f9f9"
+         }}
+       >
+         <h2>{student.name}</h2>
+         <p>Email: {student.email}</p>
+         <p>Course: {student.course}</p>
+         <p>Age: {student.age}</p>
+       </div>
+     ))}
+   </div>
+ );
 }
-};
-
-loadStudents();
-}, []);
-
-return (
-<div>
-<h1>Students</h1>
-
-{students.map((student, index) => (
-<div key={student.id || index}>
-<h3>{student.name}</h3>
-<p>{student.email}</p>
-<p>{student.course}</p>
-<p>{student.age}</p>
-</div>
-))}
-</div>
-);
-}
-
 
 ===========================================================================
 Problem 14: Student Directory - Add and
 ===========================================================================
-
 
 FILE: backend/routes.js
 ---------------------------------------------
@@ -1654,481 +1504,49 @@ import { getDB } from "./db.js";
 
 const router = express.Router();
 
-// GET all students sorted by name
+// GET: Retrieve all students sorted by name
 router.get("/all", async (req, res) => {
   try {
-      const db = getDB();
+    const db = getDB();
 
-          const result = await db
-                .collection("students")
-                      .find()
-                            .sort({ name: 1 })
-                                  .toArray();
-
-                                      res.json(result);
-                                        } catch (err) {
-                                            res.status(500).json({ error:
-err.message });
-                                              }
-                                              });
-
-                                              // POST - Add a new student
-                                              router.post("/", async (req, res)
-=> {
-                                                try {
-                                                    const db = getDB();
-
-                                                        const {
-                                                              name,
-roll_number,
-department,
-cgpa,
-year
-} = req.body;
-
-const student = {
-name,
-roll_number,
-department,
-cgpa: Number(cgpa),
-year: Number(year)
-};
-
-const result = await db
-.collection("students")
-.insertOne(student);
-
-res.status(201).json({
-...student,
-_id: result.insertedId
-});
-} catch (err) {
-res.status(500).json({ error: err.message });
-}
-});
-
-// DELETE - Remove student by ID
-router.delete("/:id", async (req, res) => {
-try {
-const db = getDB();
-
-const result = await db
-.collection("students")
-.deleteOne({
-_id: new ObjectId(req.params.id)
-});
-
-if (result.deletedCount === 0) {
-return res.status(404).json({
-error: "Student not found"
-});
-}
-
-res.status(200).json({
-deleted: true
-});
-} catch (err) {
-res.status(500).json({ error: err.message });
-}
-});
-
-export default router;
-
-
-FILE: src/App.jsx
----------------------------------------------
-import { useEffect, useState } from "react";
-import "./App.css";
-
-const API_URL = "/api/students";
-
-const initialForm = {
-  name: "",
-    roll_number: "",
-     department: "",
-       cgpa: "",
-         year: ""
-         };
-
-         export default function App() {
-           const [students, setStudents] = useState([]);
-             const [status, setStatus] = useState("loading");
-               const [errorMessage, setErrorMessage] = useState("");
-
-                 const [form, setForm] = useState(initialForm);
-                   const [submitting, setSubmitting] = useState(false);
-                     const [deletingId, setDeletingId] = useState(null);
-
-                       // Load all students
-                         async function loadStudents() {
-                             try {
-                                   const res = await fetch(`${API_URL}/all`);
-
-                                         if (!res.ok) {
-                                                 throw new Error(`Server
-responded with ${res.status}`);
-                                                       }
-
-                                                             const data =
-await res.json();
-
-setStudents(data);
-setStatus("loaded");
-setErrorMessage("");
-} catch (err) {
-setErrorMessage(err.message);
-setStatus("error");
-}
-}
-
-useEffect(() => {
-loadStudents();
-}, []);
-
-// TASK 3 - Handle form input
-function handleChange(e) {
-const { name, value } = e.target;
-
-setForm((prev) => ({
-...prev,
-[name]: value
-}));
-}
-
-// TASK 3 - Add student
-async function handleSubmit(e) {
-e.preventDefault();
-setSubmitting(true);
-setErrorMessage("");
-
-try {
-const res = await fetch(API_URL, {
-method: "POST",
-headers: {
-"Content-Type": "application/json"
-},
-body: JSON.stringify(form)
-});
-
-if (!res.ok) {
-throw new Error("Failed to add student");
-}
-
-const newStudent = await res.json();
-
-setStudents((prev) =>
-[...prev, newStudent].sort((a, b) =>
-a.name.localeCompare(b.name)
-)
-);
-
-setForm(initialForm);
-setStatus("loaded");
-} catch (err) {
-setErrorMessage(err.message);
-} finally {
-setSubmitting(false);
-}
-}
-
-// TASK 4 - Delete student
-async function handleDelete(id) {
-setDeletingId(id);
-setErrorMessage("");
-
-try {
-const res = await fetch(`${API_URL}/${id}`, {
-method: "DELETE"
-});
-
-if (!res.ok) {
-throw new Error("Failed to delete student");
-}
-
-setStudents((prev) =>
-prev.filter((student) => student._id !== id)
-);
-} catch (err) {
-setErrorMessage(err.message);
-} finally {
-setDeletingId(null);
-}
-}
-
-return (
-<div className="page">
-<header className="page-header">
-<h1 className="page-header__title">
-Student Directory
-</h1>
-
-<p className="page-header__subtitle">
-{status === "loaded"
-? `${students.length} student${students.length === 1 ? "" : "s"} on record`
-: "Loading the register..."}
-</p>
-</header>
-
-<main className="page-content">
-{/* TASK 3 - Add student form */}
-<section className="form-section">
-<h2>Add Student</h2>
-
-<form onSubmit={handleSubmit} className="student-form">
-<div className="form-group">
-<label htmlFor="name">Name</label>
-<input
-id="name"
-type="text"
-name="name"
-value={form.name}
-onChange={handleChange}
-required
-/>
-</div>
-
-<div className="form-group">
-<label htmlFor="roll_number">
-Roll Number
-</label>
-<input
-id="roll_number"
-type="text"
-name="roll_number"
-value={form.roll_number}
-onChange={handleChange}
-required
-/>
-</div>
-
-<div className="form-group">
-<label htmlFor="department">
-Department
-</label>
-<input
-id="department"
-type="text"
-name="department"
-value={form.department}
-onChange={handleChange}
-required
-/>
-</div>
-
-<div className="form-group">
-<label htmlFor="cgpa">CGPA</label>
-<input
-id="cgpa"
-type="number"
-name="cgpa"
-min="0"
-max="10"
-step="0.01"
-value={form.cgpa}
-onChange={handleChange}
-required
-/>
-</div>
-
-<div className="form-group">
-<label htmlFor="year">Year</label>
-<input
-id="year"
-type="number"
-name="year"
-min="1"
-max="4"
-value={form.year}
-onChange={handleChange}
-required
-/>
-</div>
-
-<button
-type="submit"
-className="submit-button"
-disabled={submitting}
->
-{submitting ? "Adding..." : "Add Student"}
-</button>
-</form>
-</section>
-
-{errorMessage && (
-<div className="error-message" role="alert">
-{errorMessage}
-</div>
-)}
-
-{status === "loading" && (
-<div className="loading-state" role="status">
-Opening the register...
-</div>
-)}
-
-{status === "error" && (
-<div className="empty-state empty-state--error">
-<h2 className="empty-state__title">
-Couldn't reach the server
-</h2>
-<p className="empty-state__body">
-{errorMessage}
-</p>
-</div>
-)}
-
-{status === "loaded" && students.length === 0 && (
-<div className="empty-state">
-<h2 className="empty-state__title">
-Nobody on the list
-</h2>
-<p className="empty-state__body">
-Add a student using the form above.
-</p>
-</div>
-)}
-
-{status === "loaded" && students.length > 0 && (
-<table className="student-table">
-<thead>
-<tr>
-<th>Name</th>
-<th>Roll number</th>
-<th>Department</th>
-<th>CGPA</th>
-<th>Year</th>
-<th aria-label="Actions" />
-</tr>
-</thead>
-
-<tbody>
-{students.map((student) => (
-<tr key={student._id}>
-<td>{student.name}</td>
-<td>{student.roll_number}</td>
-<td>{student.department}</td>
-<td>{student.cgpa}</td>
-<td>{student.year}</td>
-<td>
-<button
-type="button"
-className="delete-button"
-onClick={() =>
-handleDelete(student._id)
-}
-disabled={deletingId === student._id}
->
-{deletingId === student._id
-? "Deleting..."
-: "Delete"}
-</button>
-</td>
-</tr>
-))}
-</tbody>
-</table>
-)}
-</main>
-</div>
-);
-}
-
-
-===========================================================================
-Problem 15: Student Directory - full
-===========================================================================
-
-
-FILE: backend/routes.js
----------------------------------------------
-import express from "express";
- import { ObjectId } from "mongodb";
- import { getDB } from "./db.js";
-const router = express.Router();
-
-function parseStudent(body) {
-  return {
-    name: String(body.name ?? "").trim(),
-    roll_number: String(body.roll_number ?? "").trim(),
-    department: String(body.department ?? "").trim(),
-    cgpa: Number(body.cgpa),
-    year: Number(body.year)
-  };
-}
-
-function isValidStudent(student) {
-  return (
-    student.name.length > 0 &&
-    student.roll_number.length > 0 &&
-    student.department.length > 0 &&
-    Number.isFinite(student.cgpa) &&
-    student.cgpa >= 0 &&
-    student.cgpa <= 10 &&
-    Number.isInteger(student.year) &&
-    student.year >= 1
-  );
-}
-
-// GET /students/all
-router.get("/all", async (req, res) => {
-  try {
-    const students = await getDB()
+    const students = await db
       .collection("students")
       .find()
       .sort({ name: 1 })
       .toArray();
 
-    res.json(students);
+    res.status(200).json(students);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// GET /students/search?q=...
-router.get("/search", async (req, res) => {
-  try {
-    const q = String(req.query.q || "").trim();
-
-    const safe = q.replace(/[.*+?^${}()|[]\]/g, "\$&");
-
-    const filter = q
-      ? {
-          $or: [
-            { name: { $regex: safe, $options: "i" } },
-            { roll_number: { $regex: safe, $options: "i" } },
-            { department: { $regex: safe, $options: "i" } }
-          ]
-        }
-      : {};
-
-    const students = await getDB()
-      .collection("students")
-      .find(filter)
-      .sort({ name: 1 })
-      .toArray();
-
-    res.json(students);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// POST /students
+// POST: Add a new student
 router.post("/", async (req, res) => {
   try {
-    const student = parseStudent(req.body);
+    const db = getDB();
 
-    if (!isValidStudent(student)) {
-      return res.status(400).json({
-        error: "Invalid student data"
-      });
-    }
+    const {
+      name,
+      roll_number,
+      department,
+      cgpa,
+      year
+    } = req.body;
 
-    const result = await getDB()
+    const student = {
+      name,
+      roll_number,
+      department,
+      cgpa: Number(cgpa),
+      year: Number(year)
+    };
+
+    const result = await db
       .collection("students")
       .insertOne(student);
 
-    return res.status(201).json({
+    res.status(201).json({
       ...student,
       _id: result.insertedId
     });
@@ -2137,62 +1555,21 @@ router.post("/", async (req, res) => {
   }
 });
 
-// PUT /students/:id
-router.put("/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    if (!ObjectId.isValid(id)) {
-      return res.status(400).json({
-        error: "Invalid student ID"
-      });
-    }
-
-    const student = parseStudent(req.body);
-
-    if (!isValidStudent(student)) {
-      return res.status(400).json({
-        error: "Invalid student data"
-      });
-    }
-
-    const result = await getDB()
-      .collection("students")
-      .updateOne(
-        { _id: new ObjectId(id) },
-        { $set: student }
-      );
-
-    if (result.matchedCount === 0) {
-      return res.status(404).json({
-        error: "Student not found"
-      });
-    }
-
-    res.status(200).json({
-      ...student,
-      _id: id
-    });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// DELETE /students/:id
+// DELETE: Remove a student by ID
 router.delete("/:id", async (req, res) => {
   try {
-    const { id } = req.params;
+    const db = getDB();
 
-    if (!ObjectId.isValid(id)) {
+    if (!ObjectId.isValid(req.params.id)) {
       return res.status(400).json({
         error: "Invalid student ID"
       });
     }
 
-    const result = await getDB()
+    const result = await db
       .collection("students")
       .deleteOne({
-        _id: new ObjectId(id)
+        _id: new ObjectId(req.params.id)
       });
 
     if (result.deletedCount === 0) {
@@ -2206,11 +1583,490 @@ router.delete("/:id", async (req, res) => {
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+});
+
+export default router;
+
+FILE: src/App.jsx
+---------------------------------------------
+import { useEffect, useState } from "react";
+import "./App.css";
+const API_URL = "/api/students";
+
+const initialForm = {
+ name: "",
+ roll_number: "",
+ department: "",
+ cgpa: "",
+ year: ""
+};
+
+export default function App() {
+ const [students, setStudents] = useState([]);
+ const [status, setStatus] = useState("loading");
+ const [errorMessage, setErrorMessage] = useState("");
+
+ const [form, setForm] = useState(initialForm);
+ const [submitting, setSubmitting] = useState(false);
+ const [deletingId, setDeletingId] = useState(null);
+
+ // Load all students from MongoDB API
+ async function loadStudents() {
+   try {
+     const res = await fetch(`${API_URL}/all`);
+
+     if (!res.ok) {
+       throw new Error(`Server responded with ${res.status}`);
+     }
+
+     const data = await res.json();
+
+     setStudents(data);
+     setStatus("loaded");
+     setErrorMessage("");
+   } catch (err) {
+     setErrorMessage(err.message);
+     setStatus("error");
    }
- });
+ }
 
- export default router;
+ // Fetch students when component mounts
+ useEffect(() => {
+   loadStudents();
+ }, []);
 
+ // Handle form input changes
+ function handleChange(e) {
+   const { name, value } = e.target;
+
+   setForm((prev) => ({
+     ...prev,
+     [name]: value
+   }));
+ }
+// Add new student
+async function handleSubmit(e) {
+ e.preventDefault();
+ setSubmitting(true);
+ setErrorMessage("");
+
+ try {
+   const res = await fetch(API_URL, {
+     method: "POST",
+     headers: {
+       "Content-Type": "application/json"
+     },
+     body: JSON.stringify(form)
+   });
+
+   if (!res.ok) {
+     throw new Error("Failed to add student");
+   }
+
+   const newStudent = await res.json();
+
+   setStudents((prev) =>
+     [...prev, newStudent].sort((a, b) =>
+       a.name.localeCompare(b.name)
+     )
+   );
+
+   setForm(initialForm);
+   setStatus("loaded");
+ } catch (err) {
+   setErrorMessage(err.message);
+ } finally {
+   setSubmitting(false);
+ }
+}
+
+// Delete a student by ID
+async function handleDelete(id) {
+ setDeletingId(id);
+ setErrorMessage("");
+
+ try {
+   const res = await fetch(`${API_URL}/${id}`, {
+     method: "DELETE"
+   });
+
+   if (!res.ok) {
+     throw new Error("Failed to delete student");
+   }
+
+   setStudents((prev) =>
+     prev.filter((student) => student._id !== id)
+   );
+ } catch (err) {
+   setErrorMessage(err.message);
+ } finally {
+   setDeletingId(null);
+ }
+}
+
+return (
+ <div className="page">
+   <header className="page-header">
+     <h1 className="page-header__title">
+       Student Directory
+     </h1>
+
+     <p className="page-header__subtitle">
+       {status === "loaded"
+         ? `${students.length} student${
+             students.length === 1 ? "" : "s"
+           } on record`
+         : "Loading the register..."}
+     </p>
+   </header>
+
+   <main className="page-content">
+     {/* Add Student Form */}
+     <section className="form-section">
+       <h2>Add Student</h2>
+
+       <form
+         onSubmit={handleSubmit}
+         className="student-form"
+       >
+         <div className="form-group">
+           <label htmlFor="name">Name</label>
+           <input
+             id="name"
+             type="text"
+             name="name"
+             value={form.name}
+             onChange={handleChange}
+             required
+           />
+         </div>
+
+         <div className="form-group">
+           <label htmlFor="roll_number">
+             Roll Number
+           </label>
+           <input
+             id="roll_number"
+             type="text"
+             name="roll_number"
+             value={form.roll_number}
+             onChange={handleChange}
+             required
+   />
+ </div>
+
+ <div className="form-group">
+   <label htmlFor="department">
+     Department
+   </label>
+   <input
+     id="department"
+     type="text"
+     name="department"
+     value={form.department}
+     onChange={handleChange}
+     required
+   />
+ </div>
+
+ <div className="form-group">
+   <label htmlFor="cgpa">CGPA</label>
+   <input
+     id="cgpa"
+     type="number"
+     name="cgpa"
+     min="0"
+     max="10"
+     step="0.01"
+     value={form.cgpa}
+     onChange={handleChange}
+     required
+   />
+ </div>
+
+ <div className="form-group">
+   <label htmlFor="year">Year</label>
+   <input
+     id="year"
+     type="number"
+     name="year"
+     min="1"
+     max="4"
+     value={form.year}
+     onChange={handleChange}
+     required
+   />
+ </div>
+
+ <button
+   type="submit"
+   className="submit-button"
+   disabled={submitting}
+ >
+   {submitting ? "Adding..." : "Add Student"}
+ </button>
+</form>
+</section>
+
+{/* Error Message */}
+{errorMessage && (
+ <div className="error-message" role="alert">
+   {errorMessage}
+ </div>
+)}
+
+{/* Loading State */}
+{status === "loading" && (
+ <div className="loading-state" role="status">
+   Opening the register...
+ </div>
+)}
+
+{/* Error State */}
+{status === "error" && (
+ <div className="empty-state empty-state--error">
+   <h2 className="empty-state__title">
+     Couldn't reach the server
+   </h2>
+   <p className="empty-state__body">
+     {errorMessage}
+   </p>
+ </div>
+)}
+
+{/* Empty State */}
+{status === "loaded" && students.length === 0 && (
+ <div className="empty-state">
+   <h2 className="empty-state__title">
+     Nobody on the list
+   </h2>
+   <p className="empty-state__body">
+     Add a student using the form above.
+   </p>
+ </div>
+)}
+
+{/* Student Table */}
+{status === "loaded" && students.length > 0 && (
+ <table className="student-table">
+   <thead>
+     <tr>
+       <th>Name</th>
+       <th>Roll number</th>
+       <th>Department</th>
+       <th>CGPA</th>
+       <th>Year</th>
+       <th aria-label="Actions" />
+     </tr>
+   </thead>
+           <tbody>
+             {students.map((student) => (
+               <tr key={student._id}>
+                 <td>{student.name}</td>
+                 <td>{student.roll_number}</td>
+                 <td>{student.department}</td>
+                 <td>{student.cgpa}</td>
+                 <td>{student.year}</td>
+                 <td>
+                   <button
+                     type="button"
+                     className="delete-button"
+                     onClick={() =>
+                       handleDelete(student._id)
+                     }
+                     disabled={deletingId === student._id}
+                   >
+                     {deletingId === student._id
+                       ? "Deleting..."
+                       : "Delete"}
+                   </button>
+                 </td>
+               </tr>
+             ))}
+           </tbody>
+         </table>
+       )}
+     </main>
+   </div>
+ );
+}
+
+===========================================================================
+Problem 15: Student Directory - full
+===========================================================================
+
+FILE: backend/routes.js
+---------------------------------------------
+import express from "express";
+import { ObjectId } from "mongodb";
+import { getDB } from "./db.js";
+const router = express.Router();
+
+function parseStudent(body) {
+ return {
+   name: String(body.name ?? "").trim(),
+   roll_number: String(body.roll_number ?? "").trim(),
+   department: String(body.department ?? "").trim(),
+   cgpa: Number(body.cgpa),
+   year: Number(body.year)
+ };
+}
+
+function isValidStudent(student) {
+ return (
+   student.name.length > 0 &&
+   student.roll_number.length > 0 &&
+   student.department.length > 0 &&
+   Number.isFinite(student.cgpa) &&
+   student.cgpa >= 0 &&
+   student.cgpa <= 10 &&
+   Number.isInteger(student.year) &&
+   student.year >= 1
+ );
+}
+
+// GET /students/all
+router.get("/all", async (req, res) => {
+ try {
+   const students = await getDB()
+     .collection("students")
+     .find()
+     .sort({ name: 1 })
+     .toArray();
+
+   res.json(students);
+ } catch (err) {
+   res.status(500).json({ error: err.message });
+ }
+});
+
+// GET /students/search?q=...
+router.get("/search", async (req, res) => {
+ try {
+   const q = String(req.query.q || "").trim();
+
+   const safe = q.replace(/[.*+?^${}()|[]\]/g, "\$&");
+
+   const filter = q
+     ? {
+         $or: [
+           { name: { $regex: safe, $options: "i" } },
+           { roll_number: { $regex: safe, $options: "i" } },
+           { department: { $regex: safe, $options: "i" } }
+         ]
+       }
+     : {};
+
+   const students = await getDB()
+     .collection("students")
+     .find(filter)
+     .sort({ name: 1 })
+     .toArray();
+
+   res.json(students);
+ } catch (err) {
+   res.status(500).json({ error: err.message });
+ }
+});
+
+// POST /students
+router.post("/", async (req, res) => {
+ try {
+   const student = parseStudent(req.body);
+
+   if (!isValidStudent(student)) {
+     return res.status(400).json({
+       error: "Invalid student data"
+     });
+   }
+
+   const result = await getDB()
+     .collection("students")
+     .insertOne(student);
+
+   return res.status(201).json({
+     ...student,
+     _id: result.insertedId
+   });
+ } catch (err) {
+   res.status(500).json({ error: err.message });
+ }
+});
+
+// PUT /students/:id
+router.put("/:id", async (req, res) => {
+ try {
+   const { id } = req.params;
+
+   if (!ObjectId.isValid(id)) {
+     return res.status(400).json({
+       error: "Invalid student ID"
+     });
+   }
+
+   const student = parseStudent(req.body);
+
+   if (!isValidStudent(student)) {
+     return res.status(400).json({
+       error: "Invalid student data"
+     });
+   }
+
+   const result = await getDB()
+     .collection("students")
+     .updateOne(
+       { _id: new ObjectId(id) },
+       { $set: student }
+     );
+
+   if (result.matchedCount === 0) {
+     return res.status(404).json({
+       error: "Student not found"
+     });
+   }
+
+   res.status(200).json({
+     ...student,
+     _id: id
+   });
+ } catch (err) {
+   res.status(500).json({ error: err.message });
+ }
+});
+
+// DELETE /students/:id
+router.delete("/:id", async (req, res) => {
+ try {
+   const { id } = req.params;
+
+   if (!ObjectId.isValid(id)) {
+     return res.status(400).json({
+       error: "Invalid student ID"
+     });
+   }
+
+   const result = await getDB()
+     .collection("students")
+     .deleteOne({
+       _id: new ObjectId(id)
+     });
+
+   if (result.deletedCount === 0) {
+     return res.status(404).json({
+       error: "Student not found"
+     });
+   }
+
+   res.status(200).json({
+     deleted: true
+   });
+ } catch (err) {
+   res.status(500).json({ error: err.message });
+  }
+});
+
+export default router;
 
 FILE: src/App.jsx
 ---------------------------------------------
@@ -2663,11 +2519,9 @@ record`
  );
 }
 
-
 ===========================================================================
 Problem 16: Part 3 - Build the Express
 ===========================================================================
-
 
 FILE: src/App.jsx
 ---------------------------------------------
@@ -2870,7 +2724,6 @@ return (
 
 export default App;
 
-
 FILE: src/server/server.js
 ---------------------------------------------
 import express from "express";
@@ -3058,11 +2911,9 @@ app.listen(PORT, () => {
  console.log(`Server running on port ${PORT}`);
 });
 
-
 ===========================================================================
 Problem 17: Implementing Endpoints for
 ===========================================================================
-
 
 FILE: src/App.jsx
 ---------------------------------------------
@@ -3499,7 +3350,6 @@ return (
 
 export default App;
 
-
 FILE: src/server/server.js
 ---------------------------------------------
 import express from "express";
@@ -3725,11 +3575,9 @@ app.listen(PORT, () => {
  console.log(`Backend running on port ${PORT}`);
 });
 
-
 ===========================================================================
 Problem 18: Library Circulation Desk
 ===========================================================================
-
 
 FILE: backend/routes.js
 ---------------------------------------------
@@ -3958,417 +3806,419 @@ router.put("/loans/:id/return", async (req, res) => {
 
 export default router;
 
-
 FILE: src/App.jsx
 ---------------------------------------------
 import { useEffect, useState } from "react";
- import "./App.css";
+import "./App.css";
 
- const API_URL = "/api";
+const API_URL = "/api";
+
 const emptyBook = {
-  title: "",
-  author: "",
-  isbn: "",
-  total_copies: ""
+ title: "",
+ author: "",
+ isbn: "",
+ total_copies: ""
 };
 
 const emptyIssue = {
-  student_name: "",
-  roll_number: ""
+ student_name: "",
+ roll_number: ""
 };
 
 export default function App() {
-  const [books, setBooks] = useState([]);
-  const [loans, setLoans] = useState([]);
-  const [status, setStatus] = useState("loading");
-  const [errorMessage, setErrorMessage] = useState("");
+ const [books, setBooks] = useState([]);
+ const [loans, setLoans] = useState([]);
+ const [status, setStatus] = useState("loading");
+ const [errorMessage, setErrorMessage] = useState("");
 
-  const [bookForm, setBookForm] = useState(emptyBook);
-  const [issueForm, setIssueForm] = useState(emptyIssue);
-  const [selectedBook, setSelectedBook] = useState(null);
-  const [issueError, setIssueError] = useState("");
+ const [bookForm, setBookForm] = useState(emptyBook);
+ const [issueForm, setIssueForm] = useState(emptyIssue);
+ const [selectedBook, setSelectedBook] = useState(null);
+ const [issueError, setIssueError] = useState("");
 
-  // Load all books
-  async function loadBooks() {
-    const res = await fetch(`${API_URL}/books/all`);
+ // Load all books
+ async function loadBooks() {
+   const res = await fetch(`${API_URL}/books/all`);
 
-    if (!res.ok) {
-      throw new Error(`Server responded with ${res.status}`);
-    }
+   if (!res.ok) {
+     throw new Error(`Server responded with ${res.status}`);
+   }
 
-    setBooks(await res.json());
-  }
+   setBooks(await res.json());
+ }
 
-  // Load active loans
-  async function loadLoans() {
-    const res = await fetch(`${API_URL}/loans/active`);
+ // Load active loans
+ async function loadLoans() {
+   const res = await fetch(`${API_URL}/loans/active`);
 
-    if (!res.ok) {
-      throw new Error(`Server responded with ${res.status}`);
-    }
+   if (!res.ok) {
+     throw new Error(`Server responded with ${res.status}`);
+   }
 
-    setLoans(await res.json());
-  }
+   setLoans(await res.json());
+ }
 
-  // Refresh both tables
-  async function loadAll() {
-    try {
-      await Promise.all([loadBooks(), loadLoans()]);
-      setStatus("loaded");
-    } catch (err) {
-      setErrorMessage(err.message);
-      setStatus("error");
-    }
-}
-
+ // Refresh both tables
+ async function loadAll() {
+   try {
+     await Promise.all([loadBooks(), loadLoans()]);
+     setStatus("loaded");
+   } catch (err) {
+     setErrorMessage(err.message);
+     setStatus("error");
+   }
+ }
 useEffect(() => {
-  loadAll();
+ loadAll();
 }, []);
 
 // TASK 5: Update only the edited book field
 function handleBookChange(e) {
-  const { name, value } = e.target;
+ const { name, value } = e.target;
 
-  setBookForm(prev => ({
-    ...prev,
-    [name]: value
-  }));
+ setBookForm(prev => ({
+   ...prev,
+   [name]: value
+ }));
 }
 
 // TASK 5: Add a book
 async function handleAddBook(e) {
-  e.preventDefault();
-  setErrorMessage("");
+ e.preventDefault();
+ setErrorMessage("");
 
-  try {
-    const res = await fetch(`${API_URL}/books`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(bookForm)
-    });
+ try {
+   const res = await fetch(`${API_URL}/books`, {
+     method: "POST",
+     headers: {
+       "Content-Type": "application/json"
+     },
+     body: JSON.stringify(bookForm)
+   });
 
-    const data = await res.json();
+   const data = await res.json();
 
-    if (!res.ok) {
-      throw new Error(data.error || "Failed to add book");
-    }
+   if (!res.ok) {
+     throw new Error(data.error || "Failed to add book");
+   }
 
-    setBookForm({ ...emptyBook });
-    await loadAll();
-  } catch (err) {
-    setErrorMessage(err.message);
-  }
+   setBookForm({ ...emptyBook });
+   await loadAll();
+ } catch (err) {
+   setErrorMessage(err.message);
+ }
 }
 
 // Open the issue form for a selected book
 function openIssueForm(book) {
-  setSelectedBook(book);
-  setIssueForm({ ...emptyIssue });
-  setIssueError("");
+ setSelectedBook(book);
+ setIssueForm({ ...emptyIssue });
+ setIssueError("");
 }
 
 function handleIssueChange(e) {
-  const { name, value } = e.target;
+ const { name, value } = e.target;
 
-  setIssueForm(prev => ({
-    ...prev,
-    [name]: value
-  }));
+ setIssueForm(prev => ({
+   ...prev,
+   [name]: value
+ }));
 }
 
 // TASK 5: Issue a copy
 async function handleIssue(e) {
-  e.preventDefault();
-  setIssueError("");
+ e.preventDefault();
+ setIssueError("");
 
-  try {
-    const res = await fetch(`${API_URL}/loans`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        book_id: selectedBook._id,
-        student_name: issueForm.student_name,
-        roll_number: issueForm.roll_number
-      })
-    });
+ try {
+   const res = await fetch(`${API_URL}/loans`, {
+     method: "POST",
+     headers: {
+       "Content-Type": "application/json"
+     },
+     body: JSON.stringify({
+       book_id: selectedBook._id,
+       student_name: issueForm.student_name,
+       roll_number: issueForm.roll_number
+     })
+   });
 
-    const data = await res.json();
+   const data = await res.json();
 
-    if (!res.ok) {
-      throw new Error(
-        data.error || "Failed to issue book"
-      );
-    }
+   if (!res.ok) {
+     throw new Error(
+       data.error || "Failed to issue book"
+     );
+   }
 
-    setSelectedBook(null);
-    setIssueForm({ ...emptyIssue });
+   setSelectedBook(null);
+   setIssueForm({ ...emptyIssue });
 
-    await loadAll();
-  } catch (err) {
-    setIssueError(err.message);
-  }
+   await loadAll();
+ } catch (err) {
+   setIssueError(err.message);
+ }
 }
 
 // TASK 6: Return a copy
 async function handleReturn(id) {
-  setErrorMessage("");
+ setErrorMessage("");
 
-  try {
-    const res = await fetch(
-      `${API_URL}/loans/${id}/return`,
-      {
-        method: "PUT"
-      }
-    );
+ try {
+   const res = await fetch(
+     `${API_URL}/loans/${id}/return`,
+     {
+       method: "PUT"
+     }
+   );
 
-    const data = await res.json();
-    if (!res.ok) {
-      throw new Error(
-        data.error || "Failed to return book"
-      );
-    }
+   const data = await res.json();
 
-    await loadAll();
-  } catch (err) {
-    setErrorMessage(err.message);
-  }
+   if (!res.ok) {
+     throw new Error(
+       data.error || "Failed to return book"
+     );
+   }
+
+   await loadAll();
+ } catch (err) {
+   setErrorMessage(err.message);
+ }
 }
 
 return (
-  <div className="page">
-    <header className="page-header">
-      <h1 className="page-header__title">
-        Library Circulation Desk
-      </h1>
+ <div className="page">
+   <header className="page-header">
+     <h1 className="page-header__title">
+       Library Circulation Desk
+     </h1>
 
-      <p className="page-header__subtitle">
-        {status === "loaded"
-          ? `${books.length} titles catalogued · ${loans.length} copies out`
-          : "Opening the register..."}
-      </p>
-    </header>
+     <p className="page-header__subtitle">
+       {status === "loaded"
+         ? `${books.length} titles catalogued · ${loans.length} copies out`
+         : "Opening the register..."}
+     </p>
+   </header>
 
-    {status === "loading" && (
-      <div className="loading-state" role="status">
-        Opening the register...
-      </div>
-    )}
+   {status === "loading" && (
+     <div className="loading-state" role="status">
+       Opening the register...
+     </div>
+   )}
 
-    {status === "error" && (
-      <div className="empty-state empty-state--error">
-        <h2 className="empty-state__title">
-          Couldn't reach the server
-        </h2>
+   {status === "error" && (
+     <div className="empty-state empty-state--error">
+       <h2 className="empty-state__title">
+         Couldn't reach the server
+       </h2>
 
-        <p className="empty-state__body">
-          {errorMessage}
-        </p>
-      </div>
-    )}
+       <p className="empty-state__body">
+         {errorMessage}
+       </p>
+     </div>
+   )}
 
-    {status === "loaded" && (
-      <main className="page-content">
+   {status === "loaded" && (
+     <main className="page-content">
 
-        {/* CATALOGUE */}
-        <section className="panel">
-          <h2 className="panel__title">
-            Catalogue
-          </h2>
+       {/* CATALOGUE */}
+       <section className="panel">
+         <h2 className="panel__title">
+           Catalogue
+         </h2>
 
-          {/* Add book form */}
-<form onSubmit={handleAddBook}>
-  <label>
-    Title
-    <input
-      type="text"
-      name="title"
-      value={bookForm.title}
-      onChange={handleBookChange}
-      required
-    />
-  </label>
+         {/* Add book form */}
+         <form onSubmit={handleAddBook}>
+           <label>
+   Title
+   <input
+     type="text"
+     name="title"
+     value={bookForm.title}
+     onChange={handleBookChange}
+     required
+   />
+ </label>
 
-  <label>
-    Author
-    <input
-      type="text"
-      name="author"
-      value={bookForm.author}
-      onChange={handleBookChange}
-      required
-    />
-  </label>
+ <label>
+   Author
+   <input
+     type="text"
+     name="author"
+     value={bookForm.author}
+     onChange={handleBookChange}
+     required
+   />
+ </label>
 
-  <label>
-    ISBN
-    <input
-      type="text"
-      name="isbn"
-      value={bookForm.isbn}
-      onChange={handleBookChange}
-      required
-    />
-  </label>
+ <label>
+   ISBN
+   <input
+     type="text"
+     name="isbn"
+     value={bookForm.isbn}
+     onChange={handleBookChange}
+     required
+   />
+ </label>
 
-  <label>
-    Total copies
-    <input
-      type="number"
-      name="total_copies"
-      min="1"
-      value={bookForm.total_copies}
-      onChange={handleBookChange}
-      required
-    />
-  </label>
+ <label>
+   Total copies
+   <input
+     type="number"
+     name="total_copies"
+     min="1"
+     value={bookForm.total_copies}
+     onChange={handleBookChange}
+     required
+   />
+ </label>
 
-  <button type="submit">
-    Add Book
-  </button>
+ <button type="submit">
+   Add Book
+ </button>
 </form>
 
 {/* Issue book form */}
 {selectedBook && (
-  <form onSubmit={handleIssue}>
-    <h3>
-      Issue: {selectedBook.title}
-    </h3>
+ <form onSubmit={handleIssue}>
+   <h3>
+     Issue: {selectedBook.title}
+   </h3>
 
-    <label>
-      Student name
-      <input
-        type="text"
-        name="student_name"
-        value={issueForm.student_name}
-        onChange={handleIssueChange}
-        required
-      />
-    </label>
+   <label>
+     Student name
+     <input
+       type="text"
+       name="student_name"
+       value={issueForm.student_name}
+       onChange={handleIssueChange}
+       required
+     />
+   </label>
 
-    <label>
-      Roll number
-      <input
-        type="text"
-        name="roll_number"
-        value={issueForm.roll_number}
-        onChange={handleIssueChange}
-        required
-      />
-    </label>
+   <label>
+     Roll number
+     <input
+       type="text"
+       name="roll_number"
+       value={issueForm.roll_number}
+       onChange={handleIssueChange}
+       required
+     />
+   </label>
 
-    <button type="submit">
-      Confirm Issue
-    </button>
+   <button type="submit">
+     Confirm Issue
+   </button>
 
-    <button
-      type="button"
-      onClick={() => {
-        setSelectedBook(null);
-        setIssueError("");
-      }}
-    >
-      Cancel
-    </button>
+   <button
+     type="button"
+     onClick={() => {
+       setSelectedBook(null);
+       setIssueError("");
+     }}
+   >
+     Cancel
+   </button>
 
-    {issueError && (
-      <p className="error">
-        {issueError}
-      </p>
-    )}
-  </form>
+   {issueError && (
+     <p className="error">
+       {issueError}
+     </p>
+   )}
+ </form>
 )}
 
 {errorMessage && (
-  <p className="error">
-    {errorMessage}
-  </p>
+ <p className="error">
+   {errorMessage}
+ </p>
 )}
-  {/* Catalogue table */}
-  <table className="data-table">
-    <thead>
-      <tr>
-        <th>Title</th>
-        <th>Author</th>
-        <th>ISBN</th>
-        <th>Available</th>
-        <th aria-label="Actions" />
-      </tr>
-    </thead>
 
-    <tbody>
-      {books.map(book => (
-        <tr key={book._id}>
-          <td>{book.title}</td>
-          <td>{book.author}</td>
-          <td>{book.isbn}</td>
-          <td>
-            {book.available_copies} / {book.total_copies}
-          </td>
-          <td>
-            <button
-              type="button"
-              data-testid="issue-button"
-              onClick={() => openIssueForm(book)}
-            >
-              Issue
-            </button>
-          </td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
+{/* Catalogue table */}
+<table className="data-table">
+   <thead>
+     <tr>
+       <th>Title</th>
+       <th>Author</th>
+       <th>ISBN</th>
+       <th>Available</th>
+       <th aria-label="Actions" />
+     </tr>
+   </thead>
+
+   <tbody>
+     {books.map(book => (
+       <tr key={book._id}>
+         <td>{book.title}</td>
+         <td>{book.author}</td>
+         <td>{book.isbn}</td>
+         <td>
+           {book.available_copies} / {book.total_copies}
+         </td>
+         <td>
+           <button
+             type="button"
+             data-testid="issue-button"
+             onClick={() => openIssueForm(book)}
+           >
+             Issue
+           </button>
+         </td>
+       </tr>
+     ))}
+   </tbody>
+ </table>
 </section>
 
 {/* ACTIVE LOANS */}
 <section className="panel">
-  <h2 className="panel__title">
-    Copies out
-  </h2>
+ <h2 className="panel__title">
+   Copies out
+ </h2>
 
-  <table className="data-table">
-    <thead>
-      <tr>
-        <th>Book</th>
-        <th>Student</th>
-        <th>Roll number</th>
-        <th>Due</th>
-        <th aria-label="Actions" />
-      </tr>
-    </thead>
+ <table className="data-table">
+   <thead>
+     <tr>
+       <th>Book</th>
+       <th>Student</th>
+       <th>Roll number</th>
+       <th>Due</th>
+       <th aria-label="Actions" />
+     </tr>
+   </thead>
 
-    <tbody>
-                {loans.map(loan => (
-                  <tr
-                    key={loan._id}
-                    className={loan.overdue ? "overdue" : ""}
-                  >
-                    <td>{loan.book_title}</td>
-                    <td>{loan.student_name}</td>
-                    <td>{loan.roll_number}</td>
-                    <td>
-                      {new Date(loan.due_on).toLocaleDateString()}
-                    </td>
-                    <td>
-                      <button
-                        type="button"
-                        data-testid="return-button"
-                        onClick={() => handleReturn(loan._id)}
-                      >
-                        Return
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </section>
+   <tbody>
+     {loans.map(loan => (
+       <tr
+                   key={loan._id}
+                   className={loan.overdue ? "overdue" : ""}
+                 >
+                   <td>{loan.book_title}</td>
+                   <td>{loan.student_name}</td>
+                   <td>{loan.roll_number}</td>
+                   <td>
+                     {new Date(loan.due_on).toLocaleDateString()}
+                   </td>
+                   <td>
+                     <button
+                       type="button"
+                       data-testid="return-button"
+                       onClick={() => handleReturn(loan._id)}
+                     >
+                       Return
+                     </button>
+                   </td>
+                 </tr>
+               ))}
+             </tbody>
+           </table>
+         </section>
 
-        </main>
-      )}
-    </div>
-  );
+       </main>
+     )}
+   </div>
+ );
 }
+
