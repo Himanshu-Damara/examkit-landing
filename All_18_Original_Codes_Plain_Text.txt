@@ -5,13 +5,8 @@ npm install -g --prefix "$HOME/.local" opencode-ai
 export PATH="$HOME/.local/bin:$PATH"
 opencode
 
-GROQ API KEY SETUP (PRIVATE — DO NOT COMMIT API KEYS)
--------------------------------------------------
-Configure the Groq API key privately in your terminal or OpenCode provider settings.
-Example for a terminal session:
-export GROQ_API_KEY="YOUR_GROQ_API_KEY"
-
-Note: API keys are intentionally omitted because this repository is public.
+API 1: gsk_ch4u1pKuz5RExCUtQwXcWGdyb3FYazlxDhq4muXNSj4TBNmatkl
+API 2: gsk_CEax0uGxXRhgoNjAaxyOWGdyb3FYSm3eWWO8cvJDAoWHM6fXkX4
 
 ALL 18 PROBLEMS — ORIGINAL SUBMITTED CODE IN PLAIN TEXT
 
