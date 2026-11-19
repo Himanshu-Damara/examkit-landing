@@ -2,11 +2,9 @@ ALL 18 PROBLEMS — ORIGINAL SUBMITTED CODE IN PLAIN TEXT
 
 Extracted from the 18 uploaded PDFs. PDF line wrapping may require cleanup.
 
-
 ===========================================================================
 Problem 1: SecureAuth - Password
 ===========================================================================
-
 
 FILE: index.js
 ---------------------------------------------
@@ -76,11 +74,9 @@ hashed));
 export { hashPassword, verifyPassword, generateToken, decodeToken,
 AUTH_SECRET_KEY };
 
-
 ===========================================================================
 Problem 2: User Authentication API
 ===========================================================================
-
 
 FILE: src/index.js
 ---------------------------------------------
@@ -247,11 +243,9 @@ app.listen(PORT, () => {
 export default app;
 export { hashPassword, verifyPassword, JWT_SECRET };
 
-
 ===========================================================================
 Problem 3: Authentication System
 ===========================================================================
-
 
 FILE: src/index.js
 ---------------------------------------------
@@ -524,11 +518,9 @@ export {
   TOKEN_EXPIRY
 };
 
-
 ===========================================================================
 Problem 4: EventMaster - Digital Ticket
 ===========================================================================
-
 
 FILE: index.js
 ---------------------------------------------
@@ -584,11 +576,9 @@ if (process.env.NODE_ENV !== "test") {
 // Export for testing
 export { generateTicket, verifyTicket, TICKET_SECRET_KEY };
 
-
 ===========================================================================
 Problem 5: Books Management APIs
 ===========================================================================
-
 
 FILE: src/index.js
 ---------------------------------------------
@@ -714,11 +704,9 @@ app.listen(PORT, () => {
 
 export default app;
 
-
 ===========================================================================
 Problem 6: Connecting a Student
 ===========================================================================
-
 
 FILE: index.js
 ---------------------------------------------
@@ -878,11 +866,9 @@ async function main() {
 
 main();
 
-
 ===========================================================================
 Problem 7: Schema Validation and
 ===========================================================================
-
 
 FILE: index.js
 ---------------------------------------------
@@ -991,11 +977,9 @@ const deletedStudent = await Student.findByIdAndDelete(
 
 main();
 
-
 ===========================================================================
 Problem 8: References, Populate and
 ===========================================================================
-
 
 FILE: index.js
 ---------------------------------------------
@@ -1154,11 +1138,9 @@ const populatedStudents = await Student.find().populate("course");
 
 main();
 
-
 ===========================================================================
 Problem 9: Task - Library Inventory
 ===========================================================================
-
 
 FILE: index.js
 ---------------------------------------------
@@ -1224,11 +1206,9 @@ const allBooks = db.books.find().toArray();
 print("Total documents in 'books' collection: " + count);
 printjson(allBooks);
 
-
 ===========================================================================
 Problem 10: Task - Advanced Book
 ===========================================================================
-
 
 FILE: index.js
 ---------------------------------------------
@@ -1248,8 +1228,6 @@ help" },
 "Programming" }
 ]);
 
-
-
 // --- STEP 1: QUERY ($gt) ---
 print("GT Query Result:");
 printjson(
@@ -1257,8 +1235,6 @@ printjson(
    copies: {$gt:4}
   }).toArray()
 );
-
-
 
 // --- STEP 2: FILTER ($in) ---
 print("IN Filter Result:");
@@ -1268,8 +1244,6 @@ printjson(
   }).toArray()
 );
 
-
-
 // --- STEP 3: SEARCH ($regex) ---
 print("Regex Search Result:");
 printjson(
@@ -1277,8 +1251,6 @@ printjson(
    title: { $regex: /^The/}
   }).toArray()
 );
-
-
 
 // --- STEP 4: PROJECTION ---
 print("Projection Result:");
@@ -1291,11 +1263,9 @@ printjson(
  ).toArray()
 );
 
-
 ===========================================================================
 Problem 11: Recipe Book - Insert
 ===========================================================================
-
 
 FILE: backend/db.js
 ---------------------------------------------
@@ -1385,11 +1355,9 @@ export function getDB() {
  return db;
 }
 
-
 ===========================================================================
 Problem 12: Recipe Book - Find & Filter
 ===========================================================================
-
 
 FILE: backend/routes.js
 ---------------------------------------------
@@ -1532,11 +1500,9 @@ router.get("/flexible-search", async (req, res) => {
 
 export default router;
 
-
 ===========================================================================
 Problem 13: React + Express Student
 ===========================================================================
-
 
 FILE: backend/server.js
 ---------------------------------------------
@@ -1578,7 +1544,6 @@ ${PORT}`);
                                       export default app;
                                       export { app, server };
 
-
 FILE: src/App.jsx
 ---------------------------------------------
 import Contacts from "./pages/Contacts";
@@ -1590,7 +1555,6 @@ function App() {
         }
 
         export default App;
-
 
 FILE: src/pages/Contacts.jsx
 ---------------------------------------------
@@ -1640,11 +1604,9 @@ return (
 );
 }
 
-
 ===========================================================================
 Problem 14: Student Directory - Add and
 ===========================================================================
-
 
 FILE: backend/routes.js
 ---------------------------------------------
@@ -1733,7 +1695,6 @@ res.status(500).json({ error: err.message });
 });
 
 export default router;
-
 
 FILE: src/App.jsx
 ---------------------------------------------
@@ -2033,11 +1994,9 @@ disabled={deletingId === student._id}
 );
 }
 
-
 ===========================================================================
 Problem 15: Student Directory - full
 ===========================================================================
-
 
 FILE: backend/routes.js
 ---------------------------------------------
@@ -2210,7 +2169,6 @@ router.delete("/:id", async (req, res) => {
  });
 
  export default router;
-
 
 FILE: src/App.jsx
 ---------------------------------------------
@@ -2663,11 +2621,9 @@ record`
  );
 }
 
-
 ===========================================================================
 Problem 16: Part 3 - Build the Express
 ===========================================================================
-
 
 FILE: src/App.jsx
 ---------------------------------------------
@@ -2870,7 +2826,6 @@ return (
 
 export default App;
 
-
 FILE: src/server/server.js
 ---------------------------------------------
 import express from "express";
@@ -3058,11 +3013,9 @@ app.listen(PORT, () => {
  console.log(`Server running on port ${PORT}`);
 });
 
-
 ===========================================================================
 Problem 17: Implementing Endpoints for
 ===========================================================================
-
 
 FILE: src/App.jsx
 ---------------------------------------------
@@ -3499,7 +3452,6 @@ return (
 
 export default App;
 
-
 FILE: src/server/server.js
 ---------------------------------------------
 import express from "express";
@@ -3725,11 +3677,9 @@ app.listen(PORT, () => {
  console.log(`Backend running on port ${PORT}`);
 });
 
-
 ===========================================================================
 Problem 18: Library Circulation Desk
 ===========================================================================
-
 
 FILE: backend/routes.js
 ---------------------------------------------
@@ -3957,7 +3907,6 @@ router.put("/loans/:id/return", async (req, res) => {
 });
 
 export default router;
-
 
 FILE: src/App.jsx
 ---------------------------------------------
